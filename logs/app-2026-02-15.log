@@ -233,3 +233,163 @@ Unified API Server running on http://0.0.0.0:3000
 [2026-02-15 05:07:25.306] [Req:43cdb495] [INFO] [API Potluck] Health sync complete: 0/0 healthy
 [2026-02-15 05:12:25.308] [Req:43cdb495] [INFO] [API Potluck] Running scheduled health sync from pool...
 [2026-02-15 05:12:25.309] [Req:43cdb495] [INFO] [API Potluck] Health sync complete: 0/0 healthy
+[2026-02-15 23:25:41.349] [INFO] [Initialization] Discovering and initializing plugins...
+[2026-02-15 23:25:41.352] [INFO] [PluginManager] Registered plugin: ai-monitor v1.0.0
+[2026-02-15 23:25:41.360] [INFO] [PluginManager] Registered plugin: api-potluck v1.0.1
+[2026-02-15 23:25:41.362] [INFO] [PluginManager] Registered plugin: default-auth v1.0.0
+[2026-02-15 23:25:41.363] [INFO] [PluginManager] Found plugin for default config: ai-monitor
+[2026-02-15 23:25:41.363] [INFO] [PluginManager] Found plugin for default config: api-potluck
+[2026-02-15 23:25:41.363] [INFO] [PluginManager] Found plugin for default config: default-auth
+[2026-02-15 23:25:41.364] [INFO] [AI Monitor Plugin] Initialized
+[2026-02-15 23:25:41.365] [INFO] [PluginManager] Initialized plugin: ai-monitor
+[2026-02-15 23:25:41.365] [INFO] [API Potluck Plugin] Initializing...
+[2026-02-15 23:25:41.365] [INFO] [API Potluck] Health sync scheduler started (interval: 300s)
+[2026-02-15 23:25:41.365] [INFO] [PluginManager] Initialized plugin: api-potluck
+[2026-02-15 23:25:41.365] [INFO] [Plugins] Loaded 3 plugin(s):
+[2026-02-15 23:25:41.365] [INFO]   ✓ ai-monitor v1.0.0 - AI 接口监控插件 - 捕获请求和响应参数（全链路协议转换监控，流式聚合输出，用于调试和分析）
+[2026-02-15 23:25:41.365] [INFO]   ✓ api-potluck v1.0.1 - API 大锅饭 - Key 管理和用量统计插件<br>管理端：<a href="potluck.html" target="_blank">potluck.html</a><br>用户端：<a href="potluck-user.html" target="_blank">potluck-user.html</a>
+[2026-02-15 23:25:41.365] [INFO]   ✓ default-auth v1.0.0 - 默认 API Key 认证插件
+[2026-02-15 23:25:41.366] [INFO] [ProviderPoolManager] Initialized provider statuses: ok (maxErrorCount: 3)
+[2026-02-15 23:25:41.366] [INFO] [Initialization] ProviderPoolManager initialized with configured pools.
+[2026-02-15 23:25:41.366] [INFO] [ProviderPoolManager] Checking nodes for approaching expiration dates using provider adapters...
+[2026-02-15 23:25:41.366] [INFO] [Initialization] Skipping provider type 'openai-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:25:41.366] [INFO] [Initialization] Skipping provider type 'openaiResponses-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:25:41.366] [INFO] [Initialization] Initializing 2 node(s) for provider 'gemini-cli-oauth'...
+[2026-02-15 23:25:41.367] [INFO] [Adapter] getServiceAdapter, provider: gemini-cli-oauth, uuid: ac200154-26b8-4f5f-8650-e8cc738b06e3 (Gemini OAuth节点1)
+[2026-02-15 23:25:41.368] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:25:41.368] [INFO] [Gemini] Using proxy for OAuth2Client
+[2026-02-15 23:25:41.368] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:25:41.368] [INFO]   ✓ Initialized node: Gemini OAuth节点1
+[2026-02-15 23:25:41.368] [INFO] [Adapter] getServiceAdapter, provider: gemini-cli-oauth, uuid: 4f8afcc2-a9bb-4b96-bb50-3b9667a71f54 (Gemini OAuth节点2)
+[2026-02-15 23:25:41.368] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:25:41.369] [INFO] [Gemini] Using proxy for OAuth2Client
+[2026-02-15 23:25:41.369] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:25:41.369] [INFO]   ✓ Initialized node: Gemini OAuth节点2
+[2026-02-15 23:25:41.369] [INFO] [Initialization] Skipping provider type 'claude-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:25:41.369] [INFO] [Initialization] Skipping provider type 'claude-kiro-oauth' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:25:41.369] [INFO] [Initialization] Skipping provider type 'openai-qwen-oauth' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:25:41.369] [INFO] [Initialization] Skipping provider type 'gemini-antigravity' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:25:41.369] [INFO] [Initialization] Skipping provider type 'openai-iflow' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:25:41.369] [INFO] [Initialization] Provider pool initialization complete: 2 succeeded, 0 failed.
+[2026-02-15 23:25:41.374] [INFO] --- Unified API Server Configuration ---
+[2026-02-15 23:25:41.374] [INFO]   Primary Model Provider: gemini-cli-oauth
+[2026-02-15 23:25:41.374] [INFO]   System Prompt File: configs/input_system_prompt.txt
+[2026-02-15 23:25:41.374] [INFO]   System Prompt Mode: overwrite
+[2026-02-15 23:25:41.374] [INFO]   Host: 0.0.0.0
+[2026-02-15 23:25:41.374] [INFO]   Port: 3000
+[2026-02-15 23:25:41.374] [INFO]   Required API Key: test-key-123
+[2026-02-15 23:25:41.374] [INFO]   Prompt Logging: none
+[2026-02-15 23:25:41.374] [INFO] ------------------------------------------
+[2026-02-15 23:25:41.374] [INFO] 
+Unified API Server running on http://0.0.0.0:3000
+[2026-02-15 23:25:41.374] [INFO] Supports multiple API formats:
+[2026-02-15 23:25:41.374] [INFO]   • OpenAI-compatible: /v1/chat/completions, /v1/responses, /v1/models
+[2026-02-15 23:25:41.374] [INFO]   • Gemini-compatible: /v1beta/models, /v1beta/models/{model}:generateContent
+[2026-02-15 23:25:41.374] [INFO]   • Claude-compatible: /v1/messages
+[2026-02-15 23:25:41.374] [INFO]   • Health check: /health
+[2026-02-15 23:25:41.374] [INFO]   • UI Management Console: http://0.0.0.0:3000/
+[2026-02-15 23:25:41.375] [INFO] [Initialization] Performing initial health checks for provider pools...
+[2026-02-15 23:25:41.375] [INFO] [ProviderPoolManager] Performing health checks on all providers...
+[2026-02-15 23:25:41.375] [INFO] [ProviderPoolManager] Reset provider counters: 2f579c65-d3c5-41b1-9985-9f6e3d7bf39c for type openai-custom
+[2026-02-15 23:25:41.375] [INFO] [ProviderPoolManager] Reset provider counters: e284628d-302f-456d-91f3-6095386fb3b8 for type openai-custom
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: e284628d-302f-456d-91f3-609538678968 for type openaiResponses-custom
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: ac200154-26b8-4f5f-8650-e8cc738b06e3 for type gemini-cli-oauth
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: 4f8afcc2-a9bb-4b96-bb50-3b9667a71f54 for type gemini-cli-oauth
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: bb87047a-3b1d-4249-adbb-1087ecd58128 for type claude-custom
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: 7c2002c6-122a-4db0-af06-8a0ff433801a for type claude-custom
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd for type claude-kiro-oauth
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: 7482abe6-8083-4288-bb7d-d8ecb7c461e2 for type claude-kiro-oauth
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: 658a2114-c4c9-d713-b8d4-ceabf0e0bf18 for type openai-qwen-oauth
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: a1b2c3d4-e5f6-7890-abcd-ef1234567890 for type gemini-antigravity
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: f0e9d8c7-b6a5-4321-fedc-ba9876543210 for type gemini-antigravity
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: 11223344-5566-7788-99aa-bbccddeeff00 for type openai-iflow
+[2026-02-15 23:25:41.376] [INFO] [ProviderPoolManager] Reset provider counters: aabbccdd-eeff-0011-2233-445566778899 for type openai-iflow
+[2026-02-15 23:25:42.378] [Req:f1e46b2e] [INFO] [ProviderPoolManager] configs/provider_pools.json updated successfully for types: openai-custom, openaiResponses-custom, gemini-cli-oauth, claude-custom, claude-kiro-oauth, openai-qwen-oauth, gemini-antigravity, openai-iflow
+[2026-02-15 23:25:44.381] [Req:f1e46b2e] [INFO] [UI] Opened login page in default browser
+[2026-02-15 23:26:08.578] [INFO] [Initialization] Discovering and initializing plugins...
+[2026-02-15 23:26:08.580] [INFO] [PluginManager] Registered plugin: ai-monitor v1.0.0
+[2026-02-15 23:26:08.584] [INFO] [PluginManager] Registered plugin: api-potluck v1.0.1
+[2026-02-15 23:26:08.585] [INFO] [PluginManager] Registered plugin: default-auth v1.0.0
+[2026-02-15 23:26:08.586] [INFO] [PluginManager] Found plugin for default config: ai-monitor
+[2026-02-15 23:26:08.586] [INFO] [PluginManager] Found plugin for default config: api-potluck
+[2026-02-15 23:26:08.586] [INFO] [PluginManager] Found plugin for default config: default-auth
+[2026-02-15 23:26:08.587] [INFO] [AI Monitor Plugin] Initialized
+[2026-02-15 23:26:08.587] [INFO] [PluginManager] Initialized plugin: ai-monitor
+[2026-02-15 23:26:08.587] [INFO] [API Potluck Plugin] Initializing...
+[2026-02-15 23:26:08.587] [INFO] [API Potluck] Health sync scheduler started (interval: 300s)
+[2026-02-15 23:26:08.588] [INFO] [PluginManager] Initialized plugin: api-potluck
+[2026-02-15 23:26:08.588] [INFO] [Plugins] Loaded 3 plugin(s):
+[2026-02-15 23:26:08.588] [INFO]   ✓ ai-monitor v1.0.0 - AI 接口监控插件 - 捕获请求和响应参数（全链路协议转换监控，流式聚合输出，用于调试和分析）
+[2026-02-15 23:26:08.588] [INFO]   ✓ api-potluck v1.0.1 - API 大锅饭 - Key 管理和用量统计插件<br>管理端：<a href="potluck.html" target="_blank">potluck.html</a><br>用户端：<a href="potluck-user.html" target="_blank">potluck-user.html</a>
+[2026-02-15 23:26:08.588] [INFO]   ✓ default-auth v1.0.0 - 默认 API Key 认证插件
+[2026-02-15 23:26:08.588] [INFO] [ProviderPoolManager] Initialized provider statuses: ok (maxErrorCount: 3)
+[2026-02-15 23:26:08.588] [INFO] [Initialization] ProviderPoolManager initialized with configured pools.
+[2026-02-15 23:26:08.589] [INFO] [ProviderPoolManager] Checking nodes for approaching expiration dates using provider adapters...
+[2026-02-15 23:26:08.589] [INFO] [Initialization] Skipping provider type 'openai-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:26:08.589] [INFO] [Initialization] Skipping provider type 'openaiResponses-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:26:08.589] [INFO] [Initialization] Initializing 2 node(s) for provider 'gemini-cli-oauth'...
+[2026-02-15 23:26:08.590] [INFO] [Adapter] getServiceAdapter, provider: gemini-cli-oauth, uuid: ac200154-26b8-4f5f-8650-e8cc738b06e3 (Gemini OAuth节点1)
+[2026-02-15 23:26:08.590] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:26:08.590] [INFO] [Gemini] Using proxy for OAuth2Client
+[2026-02-15 23:26:08.591] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:26:08.591] [INFO]   ✓ Initialized node: Gemini OAuth节点1
+[2026-02-15 23:26:08.591] [INFO] [Adapter] getServiceAdapter, provider: gemini-cli-oauth, uuid: 4f8afcc2-a9bb-4b96-bb50-3b9667a71f54 (Gemini OAuth节点2)
+[2026-02-15 23:26:08.591] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:26:08.591] [INFO] [Gemini] Using proxy for OAuth2Client
+[2026-02-15 23:26:08.591] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-15 23:26:08.591] [INFO]   ✓ Initialized node: Gemini OAuth节点2
+[2026-02-15 23:26:08.592] [INFO] [Initialization] Skipping provider type 'claude-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:26:08.592] [INFO] [Initialization] Skipping provider type 'claude-kiro-oauth' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:26:08.592] [INFO] [Initialization] Skipping provider type 'openai-qwen-oauth' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:26:08.592] [INFO] [Initialization] Skipping provider type 'gemini-antigravity' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:26:08.592] [INFO] [Initialization] Skipping provider type 'openai-iflow' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-15 23:26:08.592] [INFO] [Initialization] Provider pool initialization complete: 2 succeeded, 0 failed.
+[2026-02-15 23:26:08.625] [INFO] --- Unified API Server Configuration ---
+[2026-02-15 23:26:08.625] [INFO]   Primary Model Provider: gemini-cli-oauth
+[2026-02-15 23:26:08.625] [INFO]   System Prompt File: configs/input_system_prompt.txt
+[2026-02-15 23:26:08.625] [INFO]   System Prompt Mode: overwrite
+[2026-02-15 23:26:08.625] [INFO]   Host: 0.0.0.0
+[2026-02-15 23:26:08.625] [INFO]   Port: 3000
+[2026-02-15 23:26:08.625] [INFO]   Required API Key: test-key-123
+[2026-02-15 23:26:08.625] [INFO]   Prompt Logging: none
+[2026-02-15 23:26:08.625] [INFO] ------------------------------------------
+[2026-02-15 23:26:08.625] [INFO] 
+Unified API Server running on http://0.0.0.0:3000
+[2026-02-15 23:26:08.625] [INFO] Supports multiple API formats:
+[2026-02-15 23:26:08.625] [INFO]   • OpenAI-compatible: /v1/chat/completions, /v1/responses, /v1/models
+[2026-02-15 23:26:08.625] [INFO]   • Gemini-compatible: /v1beta/models, /v1beta/models/{model}:generateContent
+[2026-02-15 23:26:08.625] [INFO]   • Claude-compatible: /v1/messages
+[2026-02-15 23:26:08.625] [INFO]   • Health check: /health
+[2026-02-15 23:26:08.625] [INFO]   • UI Management Console: http://0.0.0.0:3000/
+[2026-02-15 23:26:08.626] [INFO] [Initialization] Performing initial health checks for provider pools...
+[2026-02-15 23:26:08.626] [INFO] [ProviderPoolManager] Performing health checks on all providers...
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: 2f579c65-d3c5-41b1-9985-9f6e3d7bf39c for type openai-custom
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: e284628d-302f-456d-91f3-6095386fb3b8 for type openai-custom
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: e284628d-302f-456d-91f3-609538678968 for type openaiResponses-custom
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: ac200154-26b8-4f5f-8650-e8cc738b06e3 for type gemini-cli-oauth
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: 4f8afcc2-a9bb-4b96-bb50-3b9667a71f54 for type gemini-cli-oauth
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: bb87047a-3b1d-4249-adbb-1087ecd58128 for type claude-custom
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: 7c2002c6-122a-4db0-af06-8a0ff433801a for type claude-custom
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd for type claude-kiro-oauth
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: 7482abe6-8083-4288-bb7d-d8ecb7c461e2 for type claude-kiro-oauth
+[2026-02-15 23:26:08.627] [INFO] [ProviderPoolManager] Reset provider counters: 658a2114-c4c9-d713-b8d4-ceabf0e0bf18 for type openai-qwen-oauth
+[2026-02-15 23:26:08.628] [INFO] [ProviderPoolManager] Reset provider counters: a1b2c3d4-e5f6-7890-abcd-ef1234567890 for type gemini-antigravity
+[2026-02-15 23:26:08.628] [INFO] [ProviderPoolManager] Reset provider counters: f0e9d8c7-b6a5-4321-fedc-ba9876543210 for type gemini-antigravity
+[2026-02-15 23:26:08.628] [INFO] [ProviderPoolManager] Reset provider counters: 11223344-5566-7788-99aa-bbccddeeff00 for type openai-iflow
+[2026-02-15 23:26:08.628] [INFO] [ProviderPoolManager] Reset provider counters: aabbccdd-eeff-0011-2233-445566778899 for type openai-iflow
+[2026-02-15 23:26:09.630] [Req:c41238ab] [INFO] [ProviderPoolManager] configs/provider_pools.json updated successfully for types: openai-custom, openaiResponses-custom, gemini-cli-oauth, claude-custom, claude-kiro-oauth, openai-qwen-oauth, gemini-antigravity, openai-iflow
+[2026-02-15 23:26:10.244] [INFO] [Initialization] Discovering and initializing plugins...
+[2026-02-15 23:26:10.248] [INFO] [PluginManager] Registered plugin: ai-monitor v1.0.0
+[2026-02-15 23:26:10.251] [INFO] [PluginManager] Registered plugin: api-potluck v1.0.1
+[2026-02-15 23:26:10.252] [INFO] [PluginManager] Registered plugin: default-auth v1.0.0
+[2026-02-15 23:26:10.253] [INFO] [PluginManager] Found plugin for default config: ai-monitor
+[2026-02-15 23:26:10.253] [INFO] [PluginManager] Found plugin for default config: api-potluck
+[2026-02-15 23:26:10.253] [INFO] [PluginManager] Found plugin for default config: default-auth
+[2026-02-15 23:26:10.254] [INFO] [AI Monitor Plugin] Initialized
+[2026-02-15 23:26:11.630] [Req:c41238ab] [INFO] [UI] Opened login page in default browser
+[2026-02-15 23:26:38.588] [Req:c41238ab] [INFO] [API Potluck] Running initial health sync from pool...
+[2026-02-15 23:26:38.589] [Req:c41238ab] [INFO] [API Potluck UserData] File watcher started for config hot-reload
+[2026-02-15 23:26:38.589] [Req:c41238ab] [INFO] [API Potluck] Health sync complete: 0/0 healthy
+[2026-02-15 23:27:48.264] [Req:addec9f8] [INFO] [Server] Received request: GET http://localhost:3000/simple.html
+[2026-02-15 23:27:48.264] [Req:addec9f8] [INFO] [Config] Ignoring invalid MODEL_PROVIDER in path segment: simple.html
+[2026-02-15 23:27:48.265] [Req:addec9f8] [INFO] [Default Auth] Unauthorized request. Headers: Authorization=N/A, x-api-key=N/A, x-goog-api-key=N/A
