@@ -1,0 +1,174 @@
+[2026-02-13 21:49:52.009] [INFO] [Initialization] Discovering and initializing plugins...
+[2026-02-13 21:49:52.012] [INFO] [PluginManager] Registered plugin: ai-monitor v1.0.0
+[2026-02-13 21:49:52.014] [INFO] [PluginManager] Registered plugin: api-potluck v1.0.1
+[2026-02-13 21:49:52.015] [INFO] [PluginManager] Registered plugin: default-auth v1.0.0
+[2026-02-13 21:49:52.015] [INFO] [PluginManager] Found plugin for default config: ai-monitor
+[2026-02-13 21:49:52.015] [INFO] [PluginManager] Found plugin for default config: api-potluck
+[2026-02-13 21:49:52.016] [INFO] [PluginManager] Found plugin for default config: default-auth
+[2026-02-13 21:49:52.016] [INFO] [PluginManager] Plugin "ai-monitor" is disabled, skipping init
+[2026-02-13 21:49:52.016] [INFO] [PluginManager] Plugin "api-potluck" is disabled, skipping init
+[2026-02-13 21:49:52.016] [INFO] [Plugins] Loaded 3 plugin(s):
+[2026-02-13 21:49:52.016] [INFO]   ✗ ai-monitor v1.0.0 - AI 接口监控插件 - 捕获请求和响应参数（全链路协议转换监控，流式聚合输出，用于调试和分析）
+[2026-02-13 21:49:52.016] [INFO]   ✗ api-potluck v1.0.1 - API 大锅饭 - Key 管理和用量统计插件<br>管理端：<a href="potluck.html" target="_blank">potluck.html</a><br>用户端：<a href="potluck-user.html" target="_blank">potluck-user.html</a>
+[2026-02-13 21:49:52.016] [INFO]   ✓ default-auth v1.0.0 - 默认 API Key 认证插件
+[2026-02-13 21:49:52.017] [INFO] [ProviderPoolManager] Initialized provider statuses: ok (maxErrorCount: 3)
+[2026-02-13 21:49:52.017] [INFO] [Initialization] ProviderPoolManager initialized with configured pools.
+[2026-02-13 21:49:52.017] [INFO] [ProviderPoolManager] Checking nodes for approaching expiration dates using provider adapters...
+[2026-02-13 21:49:52.017] [INFO] [Initialization] Skipping provider type 'openai-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-13 21:49:52.017] [INFO] [Initialization] Skipping provider type 'openaiResponses-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-13 21:49:52.017] [INFO] [Initialization] Initializing 2 node(s) for provider 'gemini-cli-oauth'...
+[2026-02-13 21:49:52.017] [INFO] [Adapter] getServiceAdapter, provider: gemini-cli-oauth, uuid: ac200154-26b8-4f5f-8650-e8cc738b06e3 (Gemini OAuth节点1)
+[2026-02-13 21:49:52.018] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-13 21:49:52.018] [INFO] [Gemini] Using proxy for OAuth2Client
+[2026-02-13 21:49:52.018] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-13 21:49:52.018] [INFO]   ✓ Initialized node: Gemini OAuth节点1
+[2026-02-13 21:49:52.018] [INFO] [Adapter] getServiceAdapter, provider: gemini-cli-oauth, uuid: 4f8afcc2-a9bb-4b96-bb50-3b9667a71f54 (Gemini OAuth节点2)
+[2026-02-13 21:49:52.018] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-13 21:49:52.018] [INFO] [Gemini] Using proxy for OAuth2Client
+[2026-02-13 21:49:52.018] [INFO] [Proxy] Using http proxy for gemini-cli-oauth: http://127.0.0.1:1089
+[2026-02-13 21:49:52.018] [INFO]   ✓ Initialized node: Gemini OAuth节点2
+[2026-02-13 21:49:52.018] [INFO] [Initialization] Skipping provider type 'claude-custom' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-13 21:49:52.018] [INFO] [Initialization] Skipping provider type 'claude-kiro-oauth' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-13 21:49:52.018] [INFO] [Initialization] Skipping provider type 'openai-qwen-oauth' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-13 21:49:52.018] [INFO] [Initialization] Skipping provider type 'gemini-antigravity' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-13 21:49:52.018] [INFO] [Initialization] Skipping provider type 'openai-iflow' (not in DEFAULT_MODEL_PROVIDERS).
+[2026-02-13 21:49:52.018] [INFO] [Initialization] Provider pool initialization complete: 2 succeeded, 0 failed.
+[2026-02-13 21:49:52.022] [INFO] --- Unified API Server Configuration ---
+[2026-02-13 21:49:52.022] [INFO]   Primary Model Provider: gemini-cli-oauth
+[2026-02-13 21:49:52.022] [INFO]   System Prompt File: configs/input_system_prompt.txt
+[2026-02-13 21:49:52.022] [INFO]   System Prompt Mode: overwrite
+[2026-02-13 21:49:52.022] [INFO]   Host: 0.0.0.0
+[2026-02-13 21:49:52.022] [INFO]   Port: 3000
+[2026-02-13 21:49:52.022] [INFO]   Required API Key: 123456
+[2026-02-13 21:49:52.022] [INFO]   Prompt Logging: none
+[2026-02-13 21:49:52.022] [INFO] ------------------------------------------
+[2026-02-13 21:49:52.022] [INFO] 
+Unified API Server running on http://0.0.0.0:3000
+[2026-02-13 21:49:52.022] [INFO] Supports multiple API formats:
+[2026-02-13 21:49:52.022] [INFO]   • OpenAI-compatible: /v1/chat/completions, /v1/responses, /v1/models
+[2026-02-13 21:49:52.022] [INFO]   • Gemini-compatible: /v1beta/models, /v1beta/models/{model}:generateContent
+[2026-02-13 21:49:52.022] [INFO]   • Claude-compatible: /v1/messages
+[2026-02-13 21:49:52.022] [INFO]   • Health check: /health
+[2026-02-13 21:49:52.022] [INFO]   • UI Management Console: http://0.0.0.0:3000/
+[2026-02-13 21:49:52.022] [INFO] [Initialization] Performing initial health checks for provider pools...
+[2026-02-13 21:49:52.022] [INFO] [ProviderPoolManager] Performing health checks on all providers...
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: 2f579c65-d3c5-41b1-9985-9f6e3d7bf39c for type openai-custom
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: e284628d-302f-456d-91f3-6095386fb3b8 for type openai-custom
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: e284628d-302f-456d-91f3-609538678968 for type openaiResponses-custom
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: ac200154-26b8-4f5f-8650-e8cc738b06e3 for type gemini-cli-oauth
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: 4f8afcc2-a9bb-4b96-bb50-3b9667a71f54 for type gemini-cli-oauth
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: bb87047a-3b1d-4249-adbb-1087ecd58128 for type claude-custom
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: 7c2002c6-122a-4db0-af06-8a0ff433801a for type claude-custom
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd for type claude-kiro-oauth
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: 7482abe6-8083-4288-bb7d-d8ecb7c461e2 for type claude-kiro-oauth
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: 658a2114-c4c9-d713-b8d4-ceabf0e0bf18 for type openai-qwen-oauth
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: a1b2c3d4-e5f6-7890-abcd-ef1234567890 for type gemini-antigravity
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: f0e9d8c7-b6a5-4321-fedc-ba9876543210 for type gemini-antigravity
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: 11223344-5566-7788-99aa-bbccddeeff00 for type openai-iflow
+[2026-02-13 21:49:52.023] [INFO] [ProviderPoolManager] Reset provider counters: aabbccdd-eeff-0011-2233-445566778899 for type openai-iflow
+[2026-02-13 21:49:53.028] [INFO] [ProviderPoolManager] configs/provider_pools.json updated successfully for types: openai-custom, openaiResponses-custom, gemini-cli-oauth, claude-custom, claude-kiro-oauth, openai-qwen-oauth, gemini-antigravity, openai-iflow
+[2026-02-13 21:49:55.035] [INFO] [UI] Opened login page in default browser
+[2026-02-13 21:50:01.236] [INFO] [Initialization] Discovering and initializing plugins...
+[2026-02-13 21:50:01.238] [INFO] [PluginManager] Registered plugin: ai-monitor v1.0.0
+[2026-02-13 21:50:01.242] [INFO] [PluginManager] Registered plugin: api-potluck v1.0.1
+[2026-02-13 21:50:01.243] [INFO] [PluginManager] Registered plugin: default-auth v1.0.0
+[2026-02-13 21:50:01.243] [INFO] [PluginManager] Found plugin for default config: ai-monitor
+[2026-02-13 21:50:01.243] [INFO] [PluginManager] Found plugin for default config: api-potluck
+[2026-02-13 21:50:01.243] [INFO] [PluginManager] Found plugin for default config: default-auth
+[2026-02-13 21:50:01.244] [INFO] [PluginManager] Plugin "ai-monitor" is disabled, skipping init
+[2026-02-13 21:50:23.861] [Req:41b9533f] [INFO] [Auth] Successfully read password file
+[2026-02-13 21:50:23.861] [Req:41b9533f] [INFO] [Auth] Validating password, stored password length: 8 , input password length: 8
+[2026-02-13 21:50:23.861] [Req:41b9533f] [INFO] [Auth] Password validation result: true
+[2026-02-13 21:50:25.449] [Req:3668b60a] [INFO] [Usage API] Fetching fresh usage data
+[2026-02-13 21:50:25.450] [Req:3668b60a] [INFO] [Usage API] Auto-initializing service adapter for claude-kiro-oauth: 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd
+[2026-02-13 21:50:25.450] [Req:3668b60a] [INFO] [Adapter] getServiceAdapter, provider: claude-kiro-oauth, uuid: 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd (Kiro OAuth节点1)
+[2026-02-13 21:50:25.450] [Req:3668b60a] [INFO] [Kiro] System proxy disabled
+[2026-02-13 21:50:25.450] [Req:3668b60a] [WARN] kiroApiService not initialized, attempting to re-initialize...
+[2026-02-13 21:50:25.450] [Req:3668b60a] [INFO] [Kiro] Initializing Kiro API Service...
+[2026-02-13 21:50:25.450] [Req:3668b60a] [WARN] geminiApiService not initialized, attempting to re-initialize...
+[2026-02-13 21:50:25.450] [Req:3668b60a] [INFO] [Gemini] Initializing Gemini API Service...
+[2026-02-13 21:50:25.450] [Req:3668b60a] [INFO] [Usage API] Auto-initializing service adapter for gemini-antigravity: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+[2026-02-13 21:50:25.450] [Req:3668b60a] [INFO] [Adapter] getServiceAdapter, provider: gemini-antigravity, uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890 (Antigravity节点1)
+[2026-02-13 21:50:25.451] [Req:3668b60a] [INFO] [Proxy] Using http proxy for gemini-antigravity: http://127.0.0.1:1089
+[2026-02-13 21:50:25.451] [Req:3668b60a] [INFO] [Antigravity] Using proxy for OAuth2Client
+[2026-02-13 21:50:25.451] [Req:3668b60a] [INFO] [Proxy] Using http proxy for gemini-antigravity: http://127.0.0.1:1089
+[2026-02-13 21:50:25.451] [Req:3668b60a] [WARN] antigravityApiService not initialized, attempting to re-initialize...
+[2026-02-13 21:50:25.451] [Req:3668b60a] [INFO] [Antigravity] Initializing Antigravity API Service...
+[2026-02-13 21:50:25.451] [Req:3668b60a] [INFO] [Gemini] Using provided Project ID: your-project-id-1
+[2026-02-13 21:50:25.451] [Req:3668b60a] [INFO] [Gemini] Using fixed models: [gemini-2.5-flash, gemini-2.5-flash-lite, gemini-2.5-pro, gemini-2.5-pro-preview-06-05, gemini-2.5-flash-preview-09-2025, gemini-3-pro-preview, gemini-3-flash-preview]
+[2026-02-13 21:50:25.452] [Req:3668b60a] [INFO] [Gemini] Initialization complete. Project ID: your-project-id-1
+[2026-02-13 21:50:25.452] [Req:3668b60a] [ERROR] [Gemini] Failed to fetch user quota: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.452] [Req:3668b60a] [WARN] geminiApiService not initialized, attempting to re-initialize...
+[2026-02-13 21:50:25.452] [Req:3668b60a] [INFO] [Gemini] Initializing Gemini API Service...
+[2026-02-13 21:50:25.452] [Req:3668b60a] [INFO] [Antigravity] Using provided Project ID: antigravity-project-1
+[2026-02-13 21:50:25.452] [Req:3668b60a] [INFO] [Antigravity] Fetching available models...
+[2026-02-13 21:50:25.452] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models from https://daily-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.452] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models from https://daily-cloudcode-pa.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.452] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models from https://autopush-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.452] [Req:3668b60a] [WARN] [Antigravity] Failed to fetch models from all endpoints. Using default models.
+[2026-02-13 21:50:25.452] [Req:3668b60a] [INFO] [Antigravity] Initialization complete. Project ID: antigravity-project-1
+[2026-02-13 21:50:25.452] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models with quotas from https://daily-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.453] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models with quotas from https://daily-cloudcode-pa.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.453] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models with quotas from https://autopush-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Usage API] Auto-initializing service adapter for gemini-antigravity: f0e9d8c7-b6a5-4321-fedc-ba9876543210
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Adapter] getServiceAdapter, provider: gemini-antigravity, uuid: f0e9d8c7-b6a5-4321-fedc-ba9876543210 (Antigravity节点2)
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Proxy] Using http proxy for gemini-antigravity: http://127.0.0.1:1089
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Antigravity] Using proxy for OAuth2Client
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Proxy] Using http proxy for gemini-antigravity: http://127.0.0.1:1089
+[2026-02-13 21:50:25.453] [Req:3668b60a] [WARN] antigravityApiService not initialized, attempting to re-initialize...
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Antigravity] Initializing Antigravity API Service...
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Gemini] Using provided Project ID: your-project-id-2
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Gemini] Using fixed models: [gemini-2.5-flash, gemini-2.5-flash-lite, gemini-2.5-pro, gemini-2.5-pro-preview-06-05, gemini-2.5-flash-preview-09-2025, gemini-3-pro-preview, gemini-3-flash-preview]
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Gemini] Initialization complete. Project ID: your-project-id-2
+[2026-02-13 21:50:25.453] [Req:3668b60a] [ERROR] [Gemini] Failed to fetch user quota: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Antigravity] Using provided Project ID: antigravity-project-2
+[2026-02-13 21:50:25.453] [Req:3668b60a] [INFO] [Antigravity] Fetching available models...
+[2026-02-13 21:50:25.454] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models from https://daily-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.454] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models from https://daily-cloudcode-pa.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.454] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models from https://autopush-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.454] [Req:3668b60a] [WARN] [Antigravity] Failed to fetch models from all endpoints. Using default models.
+[2026-02-13 21:50:25.454] [Req:3668b60a] [INFO] [Antigravity] Initialization complete. Project ID: antigravity-project-2
+[2026-02-13 21:50:25.454] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models with quotas from https://daily-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.454] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models with quotas from https://daily-cloudcode-pa.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.454] [Req:3668b60a] [ERROR] [Antigravity] Failed to fetch models with quotas from https://autopush-cloudcode-pa.sandbox.googleapis.com: No access, refresh token, API key or refresh handler callback is set.
+[2026-02-13 21:50:25.456] [Req:3668b60a] [WARN] [Kiro Auth] Region not found in credentials. Using default region us-east-1 for URLs.
+[2026-02-13 21:50:25.755] [Req:0df0db2d] [INFO] [Update] Fetching remote tags...
+[2026-02-13 21:50:26.204] [Req:0df0db2d] [INFO] [Kiro] Received 403 on getUsageLimits. Marking credential as unhealthy (no retry)...
+[2026-02-13 21:50:26.204] [Req:0df0db2d] [INFO] [Kiro] Marking credential 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd as needs refresh. Reason: 403 Forbidden on usage query
+[2026-02-13 21:50:26.204] [Req:0df0db2d] [INFO] [ProviderPoolManager] Marked provider 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd as needsRefresh. Enqueuing...
+[2026-02-13 21:50:26.204] [Req:0df0db2d] [INFO] [ProviderPoolManager] Provider claude-kiro-oauth has only 2 healthy nodes. Bypassing buffer and enqueuing refresh for 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd immediately.
+[2026-02-13 21:50:26.205] [Req:0df0db2d] [INFO] [Adapter] getServiceAdapter, provider: claude-kiro-oauth, uuid: 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd (Kiro OAuth节点1)
+[2026-02-13 21:50:26.205] [Req:0df0db2d] [INFO] [Kiro] Force refreshing token...
+[2026-02-13 21:50:26.205] [Req:0df0db2d] [INFO] [Usage API] Auto-initializing service adapter for claude-kiro-oauth: 7482abe6-8083-4288-bb7d-d8ecb7c461e2
+[2026-02-13 21:50:26.205] [Req:0df0db2d] [INFO] [Adapter] getServiceAdapter, provider: claude-kiro-oauth, uuid: 7482abe6-8083-4288-bb7d-d8ecb7c461e2 (Kiro OAuth节点2)
+[2026-02-13 21:50:26.205] [Req:0df0db2d] [INFO] [Kiro] System proxy disabled
+[2026-02-13 21:50:26.205] [Req:0df0db2d] [WARN] kiroApiService not initialized, attempting to re-initialize...
+[2026-02-13 21:50:26.205] [Req:0df0db2d] [INFO] [Kiro] Initializing Kiro API Service...
+[2026-02-13 21:50:26.208] [Req:0df0db2d] [ERROR] [ProviderPoolManager] Token refresh failed for node 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd: No refresh token available to refresh access token.
+[2026-02-13 21:50:26.208] [Req:0df0db2d] [WARN] [HealthMonitor] ⚠️ Provider became UNHEALTHY: Kiro OAuth节点1 (claude-kiro-oauth)
+[2026-02-13 21:50:26.208] [Req:0df0db2d] [WARN] [HealthMonitor]    Reason: Refresh failed: No refresh token available to refresh access token.
+[2026-02-13 21:50:26.208] [Req:0df0db2d] [WARN] [HealthMonitor]    Error Count: 3
+[2026-02-13 21:50:26.208] [Req:0df0db2d] [WARN] [ProviderPoolManager] Immediately marked provider as unhealthy: 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd for type claude-kiro-oauth. Reason: Refresh failed: No refresh token available to refresh access token.
+[2026-02-13 21:50:26.209] [Req:0df0db2d] [ERROR] [ProviderPoolManager] Failed to process refresh for node 2c69d0ac-b86f-43d8-9d17-0d300afc5cfd: No refresh token available to refresh access token.
+[2026-02-13 21:50:26.209] [Req:0df0db2d] [WARN] [Kiro Auth] Region not found in credentials. Using default region us-east-1 for URLs.
+[2026-02-13 21:50:26.544] [Req:0df0db2d] [INFO] [Update] Local version: 2.9.4, Latest version: v2.9.4, Has update: false, Method: git
+[2026-02-13 21:50:26.866] [Req:0df0db2d] [INFO] [Kiro] Received 403 on getUsageLimits. Marking credential as unhealthy (no retry)...
+[2026-02-13 21:50:26.867] [Req:0df0db2d] [INFO] [Kiro] Marking credential 7482abe6-8083-4288-bb7d-d8ecb7c461e2 as needs refresh. Reason: 403 Forbidden on usage query
+[2026-02-13 21:50:26.867] [Req:0df0db2d] [INFO] [ProviderPoolManager] Marked provider 7482abe6-8083-4288-bb7d-d8ecb7c461e2 as needsRefresh. Enqueuing...
+[2026-02-13 21:50:26.867] [Req:0df0db2d] [INFO] [ProviderPoolManager] Provider claude-kiro-oauth has only 1 healthy nodes. Bypassing buffer and enqueuing refresh for 7482abe6-8083-4288-bb7d-d8ecb7c461e2 immediately.
+[2026-02-13 21:50:26.867] [Req:0df0db2d] [INFO] [Adapter] getServiceAdapter, provider: claude-kiro-oauth, uuid: 7482abe6-8083-4288-bb7d-d8ecb7c461e2 (Kiro OAuth节点2)
+[2026-02-13 21:50:26.867] [Req:0df0db2d] [INFO] [Kiro] Force refreshing token...
+[2026-02-13 21:50:26.868] [Req:0df0db2d] [INFO] [Usage Cache] Usage data cached to /workspace/AIClient-2-API/configs/usage-cache.json
+[2026-02-13 21:50:26.869] [Req:0df0db2d] [ERROR] [ProviderPoolManager] Token refresh failed for node 7482abe6-8083-4288-bb7d-d8ecb7c461e2: No refresh token available to refresh access token.
+[2026-02-13 21:50:26.869] [Req:0df0db2d] [WARN] [HealthMonitor] ⚠️ Provider became UNHEALTHY: Kiro OAuth节点2 (claude-kiro-oauth)
+[2026-02-13 21:50:26.869] [Req:0df0db2d] [WARN] [HealthMonitor]    Reason: Refresh failed: No refresh token available to refresh access token.
+[2026-02-13 21:50:26.869] [Req:0df0db2d] [WARN] [HealthMonitor]    Error Count: 3
+[2026-02-13 21:50:26.869] [Req:0df0db2d] [WARN] [ProviderPoolManager] Immediately marked provider as unhealthy: 7482abe6-8083-4288-bb7d-d8ecb7c461e2 for type claude-kiro-oauth. Reason: Refresh failed: No refresh token available to refresh access token.
+[2026-02-13 21:50:26.869] [Req:0df0db2d] [ERROR] [ProviderPoolManager] Failed to process refresh for node 7482abe6-8083-4288-bb7d-d8ecb7c461e2: No refresh token available to refresh access token.
+[2026-02-13 21:50:27.874] [Req:0df0db2d] [INFO] [ProviderPoolManager] configs/provider_pools.json updated successfully for types: claude-kiro-oauth
+[2026-02-13 22:38:18.953] [Req:72188a75] [INFO] [Usage API] Returning cached usage data
+[2026-02-13 22:38:19.258] [Req:69a7feec] [INFO] [Update] Fetching remote tags...
+[2026-02-13 22:45:11.400] [Req:64fc92b8] [INFO] [Usage API] Returning cached usage data
+[2026-02-13 22:45:11.604] [Req:0637a7a8] [INFO] [Update] Fetching remote tags...
+[2026-02-13 22:45:42.870] [Req:dbd1d416] [INFO] [Usage API] Returning cached usage data
+[2026-02-13 22:45:43.464] [Req:366e1ae7] [INFO] [Update] Fetching remote tags...
