@@ -12,11 +12,10 @@
 
 <a href="https://deepwiki.com/justlovemaki/AIClient-2-API"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"  style="width: 134px; height: 23px;margin-bottom: 3px;"></a>
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Node.js](https://img.shields.io/badge/Node.js-≥20.0.0-green.svg)](https://nodejs.org/)
-[![Docker](https://img.shields.io/badge/docker-≥20.0.0-blue.svg)](https://hub.docker.com/r/justlikemaki/aiclient-2-api)
-[![GitHub stars](https://img.shields.io/github/stars/justlovemaki/AIClient-2-API.svg?style=flat&label=Star)](https://github.com/justlovemaki/AIClient-2-API/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/justlovemaki/AIClient-2-API.svg)](https://github.com/justlovemaki/AIClient-2-API/issues)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Node.js](https://img.shields.io/badge/Node.js-≥18.0.0-green.svg)](https://nodejs.org/)
+[![GitHub stars](https://img.shields.io/github/stars/4xiaxia/4x.svg?style=flat&label=Star)](https://github.com/4xiaxia/4x/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/4xiaxia/4x.svg)](https://github.com/4xiaxia/4x/issues)
 
 [**🔧 OpenClaw Config**](./docs/OPENCLAW_CONFIG_GUIDE.md) | [中文](./README-ZH.md) | [**👉 English**](./README.md) | [日本語](./README-JA.md) | [**📚 Documentation**](https://aiproxy.justlikemaki.vip/en/)
 
@@ -88,7 +87,6 @@
 
 - [💡 Core Advantages](#-core-advantages)
 - [🚀 Quick Start](#-quick-start)
-  - [🐳 Docker Deployment](https://hub.docker.com/r/justlikemaki/aiclient-2-api)
   - [📋 Core Features](#-core-features)
 - [🔐 Authorization Configuration Guide](#-authorization-configuration-guide)
 - [📁 Authorization File Storage Paths](#-authorization-file-storage-paths)
