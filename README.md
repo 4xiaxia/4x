@@ -10,7 +10,7 @@
 
 <div align="center">
 
-<a href="https://deepwiki.com/justlovemaki/AIClient-2-API"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"  style="width: 134px; height: 23px;margin-bottom: 3px;"></a>
+<!-- <a href="https://deepwiki.com/4xiaxia/4x"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"  style="width: 134px; height: 23px;margin-bottom: 3px;"></a> -->
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Node.js](https://img.shields.io/badge/Node.js-≥18.0.0-green.svg)](https://nodejs.org/)
@@ -39,8 +39,8 @@
 > - **2026.01.07** - Added iFlow protocol support, enabling access to Qwen, Kimi, DeepSeek, and GLM series models via OAuth authentication with automatic token refresh
 > - **2026.01.03** - Added theme switching functionality and optimized provider pool initialization, removed the fallback strategy of using provider default configuration
 > - **2025.12.30** - Added main process management and automatic update functionality
-> - **2025.12.25** - Unified configuration management: All configs centralized to `configs/` directory. Docker users need to update mount path to `-v "local_path:/app/configs"`
-> - **2025.12.11** - Automatically built Docker images are now available on Docker Hub: [justlikemaki/aiclient-2-api](https://hub.docker.com/r/justlikemaki/aiclient-2-api)
+> - **2025.12.25** - Unified configuration management: All configs centralized to `configs/` directory.
+> - **2025.12.11** - Removed Docker support for China users.
 > - **2025.11.30** - Added Antigravity protocol support, enabling access to Gemini 3 Pro, Claude Sonnet 4.5, and other models via Google internal interfaces
 > - **2025.11.16** - Added Ollama protocol support, unified interface to access all supported models (Claude, Gemini, Qwen, OpenAI, etc.)
 > - **2025.11.11** - Added Web UI management console, supporting real-time configuration management and health status monitoring
@@ -79,7 +79,7 @@
 *   **Web UI Management Console**: Real-time configuration management, health status monitoring, API testing and log viewing
 *   **Modular Architecture**: Based on strategy and adapter patterns, adding new model providers requires only 3 steps
 *   **Complete Test Coverage**: Integration and unit test coverage 90%+, ensuring code quality
-*   **Containerized Deployment**: Provides Docker support, one-click deployment, cross-platform operation
+*   **Simple Deployment**: One-click deployment with shell scripts, no Docker required
 
 ---
 

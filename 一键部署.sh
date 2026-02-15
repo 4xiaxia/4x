@@ -5,8 +5,11 @@
 echo "🚀 AIClient-2-API 一键部署"
 echo ""
 
+# 获取脚本所在目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # 进入项目目录
-cd /workspace/AIClient-2-API
+cd "$SCRIPT_DIR"
 
 # 1. 创建配置文件（如果不存在）
 echo "📝 检查配置文件..."
