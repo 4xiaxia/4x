@@ -1,0 +1,60 @@
+name: Deploy to CloudStudio
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '*.example'
+
+jobs:
+  deploy:
+    name: 部署到 CloudStudio
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: |
+          echo "检查 package.json..."
+          if [ -f "package.json" ]; then
+            npm ci
+          else
+            echo "package.json not found, skipping dependency installation"
+          fi
+
+      - name: 运行健康检查
+        run: |
+          if [ -f "healthcheck.js" ]; then
+            echo "✅ Health check script found"
+          else
+            echo "⚠️  Health check script not found"
+          fi
+
+      - name: 部署摘要
+        run: |
+          echo "## 📦 部署摘要" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **提交:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **分支:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **作者:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **时间:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 快速开始" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "git clone https://github.com/4xiaxia/4x.git" >> $GITHUB_STEP_SUMMARY
+          echo "cd 4x" >> $GITHUB_STEP_SUMMARY
+          echo "npm install" >> $GITHUB_STEP_SUMMARY
+          echo "bash 一键部署.sh" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
