@@ -50,6 +50,43 @@
         .logo img {
             width: 80px;
             height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .simple-mode-link {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .simple-mode-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .simple-mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             margin-bottom: 15px;
         }
@@ -191,6 +228,12 @@
             <img src="/favicon.ico" alt="Logo" onerror="this.style.display='none'">
             <h1>AIClient2API</h1>
             <p data-i18n="login.heading">请登录以继续</p>
+        </div>
+
+        <div class="simple-mode-link">
+            <a href="/simple.html" class="simple-mode-btn">
+                🚀 傻瓜版（推荐新手！）
+            </a>
         </div>
 
         <form id="loginForm">

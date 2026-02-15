@@ -103,6 +103,27 @@
 
 ### 🚀 Quick Start
 
+**🎉 新手推荐：使用傻瓜版界面！**
+
+如果你是第一次使用，强烈推荐使用**傻瓜版界面**，只需 3 步即可开始使用！
+
+```bash
+# 快速开始（自动打开傻瓜版）
+bash 快速开始.sh
+
+# 或者手动启动
+bash 一键部署.sh
+```
+
+然后打开：**http://localhost:3000/simple.html**
+
+📖 [查看傻瓜版使用指南](./傻瓜版使用指南.md)
+🆚 [傻瓜版 vs 高级版对比](./傻瓜版对比.md)
+
+---
+
+### ⚙️ 高级版 Quick Start
+
 The most recommended way to use AIClient-2-API is to start it through an automated script and configure it visually directly in the **Web UI console**.
 
 #### 🐳 Docker Quick Start (Recommended)

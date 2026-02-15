@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 助手 - 傻瓜版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .emoji-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .badge {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #1565c0;
+        }
+
+        .step {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .provider-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .provider-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .provider-card.selected {
+            border-color: #667eea;
+            background: #e8eaf6;
+        }
+
+        .provider-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .provider-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .provider-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .tag-hot {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .tag-new {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .tag-recommend {
+            background: #ffe66d;
+            color: #333;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        .model-list {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .model-list-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .model-item {
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面 1: 首页 -->
+        <div id="page-home">
+            <span class="emoji-icon">🤖</span>
+            <h1>AI 助手 - 傻瓜版</h1>
+
+            <div id="connection-status" class="status status-loading">
+                <span class="spinner"></span> 检查连接状态...
+            </div>
+
+            <div class="info-box">
+                <strong>💡 小贴士：</strong>选择一个 AI 服务，点击"一键授权"，然后在弹出的浏览器窗口登录即可！
+            </div>
+
+            <!-- 推荐服务 -->
+            <div class="section">
+                <div class="section-title">
+                    ⭐ 推荐服务（免费）
+                    <span class="badge">热门</span>
+                </div>
+
+                <!-- 通义千问 -->
+                <div class="provider-card" onclick="selectProvider('qwen')">
+                    <div class="provider-name">
+                        🚀 通义千问
+                        <span class="tag tag-hot">热门</span>
+                    </div>
+                    <div class="provider-desc">国内友好，用手机号登录，代码能力强</div>
+                    <div class="model-list">
+                        <div class="model-list-title">支持模型：</div>
+                        <div class="model-item">• qwen3-coder-plus（代码）</div>
+                        <div class="model-item">• qwen3-max（通用）</div>
+                        <div class="model-item">• qwen3-vl-plus（多模态）</div>
+                    </div>
+                </div>
+
+                <!-- Gemini -->
+                <div class="provider-card" onclick="selectProvider('gemini')">
+                    <div class="provider-name">
+                        🌟 Gemini（Google）
+                        <span class="tag tag-recommend">推荐</span>
+                    </div>
+                    <div class="provider-desc">最简单，推荐！用 Google 账号登录</div>
+                    <div class="model-list">
+                        <div class="model-list-title">支持模型：</div>
+                        <div class="model-item">• gemini-2.5-flash-exp（快速）</div>
+                        <div class="model-item">• gemini-2.5-pro-exp（强大）</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- iFlow -->
+            <div class="section">
+                <div class="section-title">
+                    🔥 iFlow CLI
+                    <span class="tag tag-new">新功能</span>
+                </div>
+
+                <div class="provider-card" onclick="selectProvider('iflow')">
+                    <div class="provider-name">
+                        🌈 iFlow（多模型平台）
+                        <span class="tag tag-hot">超值</span>
+                    </div>
+                    <div class="provider-desc">一个账号支持多个 AI：Qwen、Kimi、DeepSeek、GLM</div>
+                    <div class="model-list">
+                        <div class="model-list-title">支持模型：</div>
+                        <div class="model-item">• qwen3 系列（千问）</div>
+                        <div class="model-item">• kimi-k2（月之暗面）</div>
+                        <div class="model-item">• deepseek-v3（深度求索）</div>
+                        <div class="model-item">• glm-4.6/4.7（智谱）</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 智谱 AI -->
+            <div class="section">
+                <div class="section-title">
+                    🧠 智谱 AI
+                    <span class="tag tag-new">新功能</span>
+                </div>
+
+                <div class="provider-card" onclick="selectProvider('zhipu')">
+                    <div class="provider-name">
+                        💎 智谱 GLM
+                        <span class="tag tag-recommend">推荐</span>
+                    </div>
+                    <div class="provider-desc">国内领先大模型，支持多模态和代码生成</div>
+                    <div class="model-list">
+                        <div class="model-list-title">支持模型：</div>
+                        <div class="model-item">• glm-4.7（最新旗舰）</div>
+                        <div class="model-item">• glm-4.6（高性能）</div>
+                        <div class="model-item">• glm-4-plus（多模态）</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 其他服务 -->
+            <div class="section">
+                <div class="section-title">📚 其他服务</div>
+
+                <div class="provider-card" onclick="selectProvider('kiro')">
+                    <div class="provider-name">⚡ Kiro（Claude）</div>
+                    <div class="provider-desc">需要先安装 Kiro 客户端，质量最高</div>
+                </div>
+
+                <div class="provider-card" onclick="selectProvider('openai')">
+                    <div class="provider-name">🔑 OpenAI</div>
+                    <div class="provider-desc">需要自己的 API Key</div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                <i>⚙️</i> 高级模式
+            </button>
+        </div>
+
+        <!-- 页面 2: 授权页面 -->
+        <div id="page-auth" class="hidden">
+            <button class="back-btn" onclick="goHome()">
+                ← 返回首页
+            </button>
+
+            <h1 id="auth-title">授权 AI 服务</h1>
+
+            <div id="auth-status" class="status status-loading">
+                <span class="spinner"></span> 准备授权...
+            </div>
+
+            <div id="auth-instructions" class="hidden">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    点击下面的按钮，会自动打开浏览器
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    在浏览器中登录你的账号
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    点击"允许"完成授权
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    授权成功后，回来这里！
+                </div>
+            </div>
+
+            <div class="section">
+                <button id="auth-btn" class="btn btn-primary" onclick="startAuth()">
+                    <i>🔐</i> 一键授权
+                </button>
+            </div>
+
+            <div id="auth-success" class="hidden">
+                <div class="info-box" style="background: #d4edda; border-color: #c3e6cb; color: #155724;">
+                    ✅ 授权成功！现在可以使用 AI 助手了！
+                </div>
+
+                <div class="model-list" style="background: #e8eaf6; padding: 15px;">
+                    <div class="model-list-title" style="font-size: 14px; margin-bottom: 10px;">🎯 可用模型：</div>
+                    <div id="available-models"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面 3: OpenAI API Key -->
+        <div id="page-apikey" class="hidden">
+            <button class="back-btn" onclick="goHome()">
+                ← 返回首页
+            </button>
+
+            <span class="emoji-icon">🔑</span>
+            <h1>输入 API Key</h1>
+
+            <div class="info-box">
+                <strong>哪里获取 API Key？</strong><br>
+                访问 <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #667eea;">OpenAI 官网</a>，登录后创建新的 API Key
+            </div>
+
+            <div class="section">
+                <div class="section-title">粘贴你的 API Key</div>
+                <input type="password" id="api-key-input"
+                    placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxx"
+                    style="width: 100%; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 14px; margin-bottom: 15px;">
+            </div>
+
+            <button class="btn btn-primary" onclick="saveApiKey()">
+                <i>💾</i> 保存
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedProvider = null;
+
+        // 提供商配置
+        const providers = {
+            qwen: {
+                title: '授权通义千问（阿里）',
+                models: [
+                    'qwen3-coder-plus',
+                    'qwen3-max',
+                    'qwen3-vl-plus',
+                    'qwen3-32b'
+                ],
+                desc: '用手机号登录，支持代码和多模态'
+            },
+            gemini: {
+                title: '授权 Gemini（Google）',
+                models: [
+                    'gemini-2.5-flash-exp',
+                    'gemini-2.5-pro-exp'
+                ],
+                desc: '用 Google 账号登录，快速强大'
+            },
+            iflow: {
+                title: '授权 iFlow（多模型平台）',
+                models: [
+                    'qwen3-coder-plus',
+                    'kimi-k2',
+                    'deepseek-v3',
+                    'glm-4.6',
+                    'glm-4.7'
+                ],
+                desc: '一个账号，多个 AI！超值！'
+            },
+            zhipu: {
+                title: '授权智谱 AI',
+                models: [
+                    'glm-4.7',
+                    'glm-4.6',
+                    'glm-4-plus'
+                ],
+                desc: '国内领先大模型，支持多模态'
+            },
+            kiro: {
+                title: '配置 Kiro（Claude）',
+                models: [
+                    'claude-opus-4.5',
+                    'claude-sonnet-4.5'
+                ],
+                desc: '需要先安装 Kiro 客户端'
+            }
+        };
+
+        // 检查连接状态
+        async function checkConnection() {
+            try {
+                const response = await fetch('/health');
+                if (response.ok) {
+                    document.getElementById('connection-status').className = 'status status-connected';
+                    document.getElementById('connection-status').innerHTML = '✅ 服务正常运行';
+                } else {
+                    throw new Error('Service not ready');
+                }
+            } catch (error) {
+                document.getElementById('connection-status').className = 'status status-disconnected';
+                document.getElementById('connection-status').innerHTML = '❌ 服务未启动，请先运行 <code>bash 快速开始.sh</code>';
+            }
+        }
+
+        // 选择提供商
+        function selectProvider(provider) {
+            selectedProvider = provider;
+
+            if (provider === 'openai') {
+                showPage('page-apikey');
+            } else {
+                showPage('page-auth');
+
+                const config = providers[provider];
+                document.getElementById('auth-title').textContent = config.title;
+
+                // 重置状态
+                document.getElementById('auth-status').className = 'status status-loading';
+                document.getElementById('auth-status').innerHTML = '<span class="spinner"></span> 准备授权...';
+                document.getElementById('auth-instructions').classList.add('hidden');
+                document.getElementById('auth-success').classList.add('hidden');
+                document.getElementById('auth-btn').disabled = false;
+                document.getElementById('auth-btn').innerHTML = '<i>🔐</i> 一键授权';
+            }
+        }
+
+        // 显示页面
+        function showPage(pageId) {
+            document.querySelectorAll('.container > div').forEach(div => {
+                div.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        // 返回首页
+        function goHome() {
+            showPage('page-home');
+        }
+
+        // 开始授权
+        async function startAuth() {
+            const btn = document.getElementById('auth-btn');
+            const status = document.getElementById('auth-status');
+            const instructions = document.getElementById('auth-instructions');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> 授权中...';
+            status.className = 'status status-loading';
+            status.innerHTML = '<span class="spinner"></span> 正在准备授权...';
+
+            try {
+                // 显示授权步骤
+                instructions.classList.remove('hidden');
+
+                // 调用后端 API 获取授权 URL
+                const response = await fetch('/api/auth/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ provider: selectedProvider })
+                });
+
+                if (!response.ok) {
+                    throw new Error('授权失败');
+                }
+
+                const data = await response.json();
+
+                if (data.authUrl) {
+                    status.innerHTML = '✅ 浏览器即将打开...';
+
+                    // 打开授权页面
+                    window.open(data.authUrl, '_blank');
+
+                    status.className = 'status status-connected';
+                    status.innerHTML = '✅ 已打开授权页面，请在浏览器中完成登录';
+
+                    // 轮询检查授权状态
+                    checkAuthStatus();
+                } else {
+                    throw new Error('未获取到授权链接');
+                }
+            } catch (error) {
+                console.error(error);
+                status.className = 'status status-disconnected';
+                status.innerHTML = '❌ 授权失败：' + error.message;
+                btn.disabled = false;
+                btn.innerHTML = '<i>🔐</i> 重新授权';
+            }
+        }
+
+        // 检查授权状态
+        async function checkAuthStatus() {
+            const maxAttempts = 30; // 最多检查 30 次（5 分钟）
+            let attempts = 0;
+
+            const checkInterval = setInterval(async () => {
+                attempts++;
+
+                try {
+                    const response = await fetch(`/api/auth/status?provider=${selectedProvider}`);
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        clearInterval(checkInterval);
+
+                        const config = providers[selectedProvider];
+
+                        document.getElementById('auth-status').className = 'status status-connected';
+                        document.getElementById('auth-status').innerHTML = '✅ 授权成功！';
+                        document.getElementById('auth-btn').innerHTML = '<i>✅</i> 授权完成';
+                        document.getElementById('auth-success').classList.remove('hidden');
+
+                        // 显示可用模型
+                        const modelsHtml = config.models.map(model =>
+                            `<div class="model-item">• ${model}</div>`
+                        ).join('');
+                        document.getElementById('available-models').innerHTML = modelsHtml;
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkInterval);
+                        document.getElementById('auth-status').className = 'status status-disconnected';
+                        document.getElementById('auth-status').innerHTML = '⏰ 授权超时，请重新授权';
+                        document.getElementById('auth-btn').disabled = false;
+                        document.getElementById('auth-btn').innerHTML = '<i>🔐</i> 重新授权';
+                    }
+                } catch (error) {
+                    console.error('检查授权状态失败:', error);
+                }
+            }, 10000); // 每 10 秒检查一次
+        }
+
+        // 保存 API Key
+        async function saveApiKey() {
+            const apiKey = document.getElementById('api-key-input').value.trim();
+
+            if (!apiKey) {
+                alert('请输入 API Key');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: 'OPENAI_API_KEY',
+                        value: apiKey
+                    })
+                });
+
+                if (response.ok) {
+                    alert('✅ API Key 保存成功！');
+                    goHome();
+                } else {
+                    throw new Error('保存失败');
+                }
+            } catch (error) {
+                alert('❌ 保存失败：' + error.message);
+            }
+        }
+
+        // 页面加载时检查连接
+        checkConnection();
+    </script>
+</body>
+</html>
