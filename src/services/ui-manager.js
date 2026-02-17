@@ -67,8 +67,10 @@ export async function handleUIApiRequests(method, pathParam, req, res, currentCo
         return await systemApi.handleHealthCheck(req, res);
     }
     
-    // Handle UI management API requests (需要token验证，除了登录接口、健康检查和Events接口)
-    if (pathParam.startsWith('/api/') && pathParam !== '/api/login' && pathParam !== '/api/health' && pathParam !== '/api/events' ) {
+    // Handle UI management API requests (需要token验证，除了登录接口、健康检查、Events接口和傻瓜版配置接口)
+    // 注意：/api/config POST 请求允许傻瓜版用户保存配置
+    const isPublicConfigUpdate = pathParam === '/api/config' && method === 'POST';
+    if (pathParam.startsWith('/api/') && pathParam !== '/api/login' && pathParam !== '/api/health' && pathParam !== '/api/events' && !isPublicConfigUpdate) {
         // 检查token验证
         const isAuth = await auth.checkAuth(req);
         if (!isAuth) {

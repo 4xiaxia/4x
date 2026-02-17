@@ -383,7 +383,7 @@
                 }
             } catch (error) {
                 document.getElementById('connection-status').className = 'status status-disconnected';
-                document.getElementById('connection-status').innerHTML = '❌ 服务未启动，请先运行 <code>bash 一键部署.sh</code>';
+                document.getElementById('connection-status').innerHTML = '❌ 服务未启动，请先运行 <code>bash 快速开始.sh</code>';
             }
         }
 
@@ -435,11 +435,10 @@
                 // 显示授权步骤
                 instructions.classList.remove('hidden');
 
-                // 调用后端 API 获取授权 URL
-                const response = await fetch('/api/auth/generate', {
+                // 调用后端 API 获取授权 URL（修正后的路由）
+                const response = await fetch(`/api/providers/${selectedProvider}/generate-auth-url`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ provider: selectedProvider })
+                    headers: { 'Content-Type': 'application/json' }
                 });
 
                 if (!response.ok) {
@@ -447,16 +446,17 @@
                 }
 
                 const data = await response.json();
-                
-                if (data.authUrl) {
+
+                if (data.authUrl || data.url) {
+                    const authUrl = data.authUrl || data.url;
                     status.innerHTML = '✅ 浏览器即将打开...';
-                    
+
                     // 打开授权页面
-                    window.open(data.authUrl, '_blank');
-                    
+                    window.open(authUrl, '_blank');
+
                     status.className = 'status status-connected';
                     status.innerHTML = '✅ 已打开授权页面，请在浏览器中完成登录';
-                    
+
                     // 轮询检查授权状态
                     checkAuthStatus();
                 } else {
@@ -478,14 +478,16 @@
 
             const checkInterval = setInterval(async () => {
                 attempts++;
-                
+
                 try {
-                    const response = await fetch(`/api/auth/status?provider=${selectedProvider}`);
+                    // 修正后的路由：检查提供商是否已配置
+                    const response = await fetch(`/api/providers/${selectedProvider}`);
                     const data = await response.json();
 
-                    if (data.status === 'success') {
+                    // 检查是否成功配置了提供商
+                    if (data && (data.status === 'success' || data.provider || data.providers)) {
                         clearInterval(checkInterval);
-                        
+
                         document.getElementById('auth-status').className = 'status status-connected';
                         document.getElementById('auth-status').innerHTML = '✅ 授权成功！';
                         document.getElementById('auth-btn').innerHTML = '<i>✅</i> 授权完成';

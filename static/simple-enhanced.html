@@ -608,11 +608,10 @@
                 // 显示授权步骤
                 instructions.classList.remove('hidden');
 
-                // 调用后端 API 获取授权 URL
-                const response = await fetch('/api/auth/generate', {
+                // 调用后端 API 获取授权 URL（修正后的路由）
+                const response = await fetch(`/api/providers/${selectedProvider}/generate-auth-url`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ provider: selectedProvider })
+                    headers: { 'Content-Type': 'application/json' }
                 });
 
                 if (!response.ok) {
@@ -621,11 +620,12 @@
 
                 const data = await response.json();
 
-                if (data.authUrl) {
+                if (data.authUrl || data.url) {
+                    const authUrl = data.authUrl || data.url;
                     status.innerHTML = '✅ 浏览器即将打开...';
 
                     // 打开授权页面
-                    window.open(data.authUrl, '_blank');
+                    window.open(authUrl, '_blank');
 
                     status.className = 'status status-connected';
                     status.innerHTML = '✅ 已打开授权页面，请在浏览器中完成登录';
@@ -653,10 +653,12 @@
                 attempts++;
 
                 try {
-                    const response = await fetch(`/api/auth/status?provider=${selectedProvider}`);
+                    // 修正后的路由：检查提供商是否已配置
+                    const response = await fetch(`/api/providers/${selectedProvider}`);
                     const data = await response.json();
 
-                    if (data.status === 'success') {
+                    // 检查是否成功配置了提供商
+                    if (data && (data.status === 'success' || data.provider || data.providers)) {
                         clearInterval(checkInterval);
 
                         const config = providers[selectedProvider];
