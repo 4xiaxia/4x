@@ -9,6 +9,7 @@ import { MODEL_PROVIDER } from '../utils/common.js';
 import { PROMPT_LOG_FILENAME } from '../core/config-manager.js';
 import { handleOllamaRequest, handleOllamaShow } from './ollama-handler.js';
 import { getPluginManager } from '../core/plugin-manager.js';
+import { getRateLimiter } from '../utils/rate-limiter.js';
 import { randomUUID } from 'crypto';
 
 /**
@@ -70,6 +71,32 @@ export function createRequestHandler(config, providerPoolManager) {
         if (method === 'OPTIONS') {
             res.writeHead(204);
             res.end();
+            return;
+        }
+
+        // Rate Limiting (Anti-Risk Strategy)
+        // 获取客户端 IP (优先 X-Forwarded-For，然后是 Socket IP)
+        const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
+
+        // 获取限流器实例 (基于配置初始化)
+        const rateLimiter = getRateLimiter({
+            enabled: currentConfig.RATE_LIMIT_ENABLED !== false, // 默认开启
+            globalLimit: currentConfig.GLOBAL_RATE_LIMIT || 100,
+            ipLimit: currentConfig.IP_RATE_LIMIT || 20
+        });
+
+        // 对 API 请求进行限流检查 (排除静态资源和健康检查)
+        const isApiRequest = path.startsWith('/v1/') || path.startsWith('/api/') || path.startsWith('/ollama/');
+        if (isApiRequest && !rateLimiter.check(clientIp)) {
+            logger.warn(`[RateLimit] Request blocked for IP: ${clientIp}, Path: ${path}`);
+            res.writeHead(429, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                error: {
+                    message: 'Too Many Requests',
+                    type: 'rate_limit_error',
+                    code: 429
+                }
+            }));
             return;
         }
 
