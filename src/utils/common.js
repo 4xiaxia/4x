@@ -324,6 +324,18 @@ export async function handleStreamRequest(res, service, model, requestBody, from
     let hasToolCall = false;
     let hasMessageStop = false; // 跟踪是否已经发送过结束标志（message_stop / done）
 
+    // Keep-Alive Mechanism (Anti-Risk & High Latency Support)
+    // Send a comment frame every 15 seconds to prevent timeout
+    const keepAliveInterval = setInterval(() => {
+        if (!clientDisconnected.value && !res.writableEnded) {
+            try {
+                res.write(': keep-alive\n\n');
+            } catch (err) {
+                clearInterval(keepAliveInterval);
+            }
+        }
+    }, 15000);
+
     try {
         for await (const nativeChunk of nativeStream) {
             // 检查客户端是否已断开连接
@@ -494,14 +506,16 @@ export async function handleStreamRequest(res, service, model, requestBody, from
         // 如果底层未标记，且不跳过错误计数，则在此处标记
         if (!credentialMarkedUnhealthy && !skipErrorCount && providerPoolManager && pooluuid) {
             // 400 报错码通常是请求参数问题，不记录为提供商错误
+            // 429 (Too Many Requests) 和 403 (Forbidden) 是关键风控指标，必须标记
             if (error.code === 400) {
                 logger.info(`[Provider Pool] Skipping unhealthy marking for ${toProvider} (${pooluuid}) due to status 400 (client error)`);
             } else {
                 logger.info(`[Provider Pool] Marking ${toProvider} as unhealthy due to stream error (status: ${status || 'unknown'})`);
                 // 如果是号池模式，并且请求处理失败，则标记当前使用的提供者为不健康
+                // 429/403 错误会触发 provider-pool-manager 中的 Cool Down 逻辑
                 providerPoolManager.markProviderUnhealthy(toProvider, {
                     uuid: pooluuid
-                }, error.message);
+                }, error.message || (status === 429 ? 'Too Many Requests' : (status === 403 ? 'Forbidden' : 'Unknown Error')));
                 credentialMarkedUnhealthy = true;
             }
         } else if (credentialMarkedUnhealthy) {
@@ -621,6 +635,8 @@ export async function handleStreamRequest(res, service, model, requestBody, from
         }
         // fs.writeFile('oldResponseChunk'+Date.now()+'.json', fullOldResponseJson);
         // fs.writeFile('responseChunk'+Date.now()+'.json', fullResponseJson);
+    } finally {
+        clearInterval(keepAliveInterval);
     }
 }
 
@@ -692,14 +708,16 @@ export async function handleUnaryRequest(res, service, model, requestBody, fromP
         // 如果底层未标记，且不跳过错误计数，则在此处标记
         if (!credentialMarkedUnhealthy && !skipErrorCount && providerPoolManager && pooluuid) {
             // 400 报错码通常是请求参数问题，不记录为提供商错误
+            // 429 (Too Many Requests) 和 403 (Forbidden) 是关键风控指标，必须标记
             if (error.code === 400) {
                 logger.info(`[Provider Pool] Skipping unhealthy marking for ${toProvider} (${pooluuid}) due to status 400 (client error)`);
             } else {
                 logger.info(`[Provider Pool] Marking ${toProvider} as unhealthy due to unary error (status: ${status || 'unknown'})`);
                 // 如果是号池模式，并且请求处理失败，则标记当前使用的提供者为不健康
+                // 429/403 错误会触发 provider-pool-manager 中的 Cool Down 逻辑
                 providerPoolManager.markProviderUnhealthy(toProvider, {
                     uuid: pooluuid
-                }, error.message);
+                }, error.message || (status === 429 ? 'Too Many Requests' : (status === 403 ? 'Forbidden' : 'Unknown Error')));
                 credentialMarkedUnhealthy = true;
             }
         } else if (credentialMarkedUnhealthy) {

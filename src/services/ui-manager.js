@@ -35,7 +35,16 @@ export async function serveStaticFiles(pathParam, res) {
             '.ico': 'image/x-icon'
         }[ext] || 'text/plain';
 
-        res.writeHead(200, { 'Content-Type': contentType });
+        // Add Cache-Control header
+        let cacheControl = 'no-cache'; // Default for HTML and others
+        if (['.css', '.js', '.png', '.jpg', '.ico'].includes(ext)) {
+            cacheControl = 'public, max-age=3600'; // Cache for 1 hour
+        }
+
+        res.writeHead(200, {
+            'Content-Type': contentType,
+            'Cache-Control': cacheControl
+        });
         res.end(readFileSync(filePath));
         return true;
     }

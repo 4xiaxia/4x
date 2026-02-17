@@ -1,0 +1,14 @@
+
+/* Anti-Risk Status Styles */
+.credential-status.cooling {
+    background: rgba(59, 130, 246, 0.15); /* Blue-ish */
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    animation: pulse-cool 2s infinite;
+}
+
+@keyframes pulse-cool {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}

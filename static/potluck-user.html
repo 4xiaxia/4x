@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API 大锅饭 - 我的用量</title>
+    <link rel="stylesheet" href="app/anti-risk.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -1675,7 +1676,18 @@ aorAyyyyyyyy"></textarea>
             }
             
             let statusClass = 'unknown', statusText = '未检查', statusIcon = '❓';
-            if (cred.isHealthy === true) {
+
+            // Check for cooling down status (Anti-Risk)
+            const now = new Date();
+            const coolDownUntil = cred.coolDownUntil ? new Date(cred.coolDownUntil) : null;
+            const isCoolingDown = coolDownUntil && coolDownUntil > now;
+
+            if (isCoolingDown) {
+                statusClass = 'cooling';
+                const remainingMinutes = Math.ceil((coolDownUntil - now) / 60000);
+                statusText = `冷却中 (${remainingMinutes}m)`;
+                statusIcon = '⏳';
+            } else if (cred.isHealthy === true) {
                 statusClass = 'healthy';
                 statusText = cred.healthMessage || '正常';
                 statusIcon = '✓';
