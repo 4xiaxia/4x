@@ -531,12 +531,12 @@ async function copyRecursive(src, dest) {
 export async function handleCheckUpdate(req, res) {
     try {
         const updateInfo = await checkForUpdates();
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(updateInfo));
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to check for updates:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to check for updates: ' + error.message
@@ -552,12 +552,12 @@ export async function handleCheckUpdate(req, res) {
 export async function handlePerformUpdate(req, res) {
     try {
         const updateResult = await performUpdate();
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(updateResult));
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to perform update:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Update failed: ' + error.message

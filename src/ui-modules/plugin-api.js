@@ -10,12 +10,12 @@ export async function handleGetPlugins(req, res) {
     try {
         const pluginManager = getPluginManager();
         const plugins = pluginManager.getPluginList();
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ plugins }));
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to get plugins:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to get plugins list: ' + error.message
@@ -34,7 +34,7 @@ export async function handleTogglePlugin(req, res, pluginName) {
         const { enabled } = body;
 
         if (typeof enabled !== 'boolean') {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 error: {
                     message: 'Enabled status must be a boolean'
@@ -54,7 +54,7 @@ export async function handleTogglePlugin(req, res, pluginName) {
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: `Plugin ${pluginName} ${enabled ? 'enabled' : 'disabled'} successfully`,
@@ -66,7 +66,7 @@ export async function handleTogglePlugin(req, res, pluginName) {
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to toggle plugin:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to toggle plugin: ' + error.message

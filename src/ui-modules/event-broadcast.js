@@ -195,7 +195,7 @@ export function handleUploadOAuthCredentials(req, res, options = {}) {
         uploadMiddleware(req, res, async (err) => {
             if (err) {
                 logger.error(`${logPrefix} File upload error:`, err.message);
-                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     error: {
                         message: err.message || 'File upload failed'
@@ -207,7 +207,7 @@ export function handleUploadOAuthCredentials(req, res, options = {}) {
 
             try {
                 if (!req.file) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
                     res.end(JSON.stringify({
                         error: {
                             message: 'No file was uploaded'
@@ -253,7 +253,7 @@ export function handleUploadOAuthCredentials(req, res, options = {}) {
                 const userInfoStr = userInfo ? `, ${userInfo}` : '';
                 logger.info(`${logPrefix} OAuth credentials file uploaded: ${targetFilePath} (provider: ${provider}${userInfoStr})`);
 
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: true,
                     message: 'File uploaded successfully',
@@ -265,7 +265,7 @@ export function handleUploadOAuthCredentials(req, res, options = {}) {
 
             } catch (error) {
                 logger.error(`${logPrefix} File upload processing error:`, error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     error: {
                         message: 'File upload processing failed: ' + error.message

@@ -224,12 +224,12 @@ function getProviderDisplayName(provider, providerType) {
  */
 export async function handleGetSupportedProviders(req, res) {
     try {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(supportedProviders));
         return true;
     } catch (error) {
         logger.error('[Usage API] Failed to get supported providers:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to get supported providers: ' + error.message
@@ -273,12 +273,12 @@ export async function handleGetUsage(req, res, currentConfig, providerPoolManage
             serverTime: new Date().toISOString()
         };
         
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(finalResults));
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to get usage:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to get usage info: ' + error.message
@@ -322,12 +322,12 @@ export async function handleGetProviderUsage(req, res, currentConfig, providerPo
             serverTime: new Date().toISOString()
         };
         
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(finalResults));
         return true;
     } catch (error) {
         logger.error(`[UI API] Failed to get usage for ${providerType}:`, error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: `Failed to get usage info for ${providerType}: ` + error.message

@@ -58,7 +58,7 @@ export async function handleGenerateAuthUrl(req, res, currentConfig, providerTyp
             authUrl = result.authUrl;
             authInfo = result.authInfo;
         } else {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 error: {
                     message: `Unsupported provider type: ${providerType}`
@@ -67,7 +67,7 @@ export async function handleGenerateAuthUrl(req, res, currentConfig, providerTyp
             return true;
         }
         
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             authUrl: authUrl,
@@ -77,7 +77,7 @@ export async function handleGenerateAuthUrl(req, res, currentConfig, providerTyp
         
     } catch (error) {
         logger.error(`[UI API] Failed to generate auth URL for ${providerType}:`, error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: `Failed to generate auth URL: ${error.message}`
@@ -96,7 +96,7 @@ export async function handleManualOAuthCallback(req, res) {
         const { provider, callbackUrl, authMethod } = body;
 
         if (!provider || !callbackUrl) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: 'provider and callbackUrl are required'
@@ -114,7 +114,7 @@ export async function handleManualOAuthCallback(req, res) {
         const token = url.searchParams.get('token');
 
         if (!code && !token) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: 'Callback URL must contain code or token parameter'
@@ -127,7 +127,7 @@ export async function handleManualOAuthCallback(req, res) {
             const { handleCodexOAuthCallback } = await import('../auth/oauth-handlers.js');
             const result = await handleCodexOAuthCallback(code, state);
 
-            res.writeHead(result.success ? 200 : 500, { 'Content-Type': 'application/json' });
+            res.writeHead(result.success ? 200 : 500, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify(result));
             return true;
         }
@@ -143,7 +143,7 @@ export async function handleManualOAuthCallback(req, res) {
 
             if (response.ok) {
                 logger.info(`[OAuth Manual Callback] Successfully processed callback for ${provider}`);
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: true,
                     message: 'OAuth callback processed successfully'
@@ -151,7 +151,7 @@ export async function handleManualOAuthCallback(req, res) {
             } else {
                 const errorText = await response.text();
                 logger.error(`[OAuth Manual Callback] Callback processing failed:`, errorText);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: false,
                     error: `Callback processing failed: ${response.status}`
@@ -159,7 +159,7 @@ export async function handleManualOAuthCallback(req, res) {
             }
         } catch (fetchError) {
             logger.error(`[OAuth Manual Callback] Failed to process callback:`, fetchError);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: `Failed to process callback: ${fetchError.message}`
@@ -169,7 +169,7 @@ export async function handleManualOAuthCallback(req, res) {
         return true;
     } catch (error) {
         logger.error('[OAuth Manual Callback] Error:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: false,
             error: error.message
@@ -187,7 +187,7 @@ export async function handleBatchImportKiroTokens(req, res) {
         const { refreshTokens, region } = body;
         
         if (!refreshTokens || !Array.isArray(refreshTokens) || refreshTokens.length === 0) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: 'refreshTokens array is required and must not be empty'
@@ -258,7 +258,7 @@ export async function handleBatchImportKiroTokens(req, res) {
                 logger.error('[Kiro Batch Import] Failed to write error:', writeErr.message);
             }
         } else if (!res.headersSent) {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: error.message
@@ -277,7 +277,7 @@ export async function handleBatchImportGeminiTokens(req, res) {
         const { providerType, tokens, skipDuplicateCheck } = body;
         
         if (!providerType || !tokens || !Array.isArray(tokens) || tokens.length === 0) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: 'providerType and tokens array are required and must not be empty'
@@ -335,7 +335,7 @@ export async function handleBatchImportGeminiTokens(req, res) {
             res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
             res.end();
         } else {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: error.message
@@ -354,7 +354,7 @@ export async function handleImportAwsCredentials(req, res) {
         const { credentials } = body;
         
         if (!credentials) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: 'credentials is required'
@@ -366,7 +366,7 @@ export async function handleImportAwsCredentials(req, res) {
         if (Array.isArray(credentials)) {
             // 批量导入模式 - 使用 SSE 流式响应
             if (credentials.length === 0) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: false,
                     error: 'credentials array must not be empty'
@@ -394,7 +394,7 @@ export async function handleImportAwsCredentials(req, res) {
             
             // 如果有验证错误，返回详细信息
             if (validationErrors.length > 0) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: false,
                     error: `Validation failed for ${validationErrors.length} credential(s)`,
@@ -497,7 +497,7 @@ export async function handleImportAwsCredentials(req, res) {
             if (!credentials.refreshToken) missingFields.push('refreshToken');
             
             if (missingFields.length > 0) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: false,
                     error: `Missing required fields: ${missingFields.join(', ')}`
@@ -511,7 +511,7 @@ export async function handleImportAwsCredentials(req, res) {
             
             if (result.success) {
                 logger.info(`[Kiro AWS Import] Successfully imported credentials to: ${result.path}`);
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: true,
                     path: result.path,
@@ -520,7 +520,7 @@ export async function handleImportAwsCredentials(req, res) {
             } else {
                 // 重复凭据返回 409 Conflict，其他错误返回 500
                 const statusCode = result.error === 'duplicate' ? 409 : 500;
-                res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+                res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     success: false,
                     error: result.error,
@@ -529,7 +529,7 @@ export async function handleImportAwsCredentials(req, res) {
             }
             return true;
         } else {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: 'credentials must be an object or array'
@@ -545,7 +545,7 @@ export async function handleImportAwsCredentials(req, res) {
             res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
             res.end();
         } else {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: error.message

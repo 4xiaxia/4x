@@ -1,0 +1,1844 @@
+openapi: 3.0.3
+info:
+  title: AIClient-2-API
+  description: |
+    AIClient-2-API 是一个将多种大模型 API（Gemini, Claude, OpenAI 等）统一封装为 OpenAI 兼容接口的代理服务。
+    
+    ## 功能特性
+    - 支持多种大模型提供商（Gemini, Claude, OpenAI, Qwen, iFlow, Zhipu 等）
+    - OpenAI 兼容接口
+    - 多账号轮询和智能故障转移
+    - 实时日志推送
+    - Web UI 管理界面
+    - OAuth 授权机制
+    
+    ## 认证方式
+    - **管理后台 API**：Bearer Token（通过 `/api/login` 获取）
+    - **核心 AI API**：
+      - `Authorization: Bearer <key>` - OpenAI 风格
+      - `x-api-key: <key>` - Claude 风格
+      - `x-goog-api-key: <key>` - Gemini 风格
+      - URL 参数 `?key=<key>` - Gemini 风格
+  version: 1.0.0
+  contact:
+    name: AIClient-2-API Team
+    url: https://github.com/4xiaxia/4x
+
+servers:
+  - url: http://localhost:3000
+    description: 本地开发服务器
+  - url: http://localhost:3100
+    description: 主进程管理服务器
+
+tags:
+  - name: 认证 (Auth)
+    description: 认证相关接口
+  - name: 配置 (Config)
+    description: 配置管理接口
+  - name: 系统 (System)
+    description: 系统管理接口
+  - name: 提供商 (Providers)
+    description: 提供商管理接口
+  - name: OAuth
+    description: OAuth 授权接口
+  - name: 配置文件 (Config Files)
+    description: 配置文件管理接口
+  - name: 使用量 (Usage)
+    description: 使用量查询接口
+  - name: 更新 (Update)
+    description: 系统更新接口
+  - name: 插件 (Plugins)
+    description: 插件管理接口
+  - name: OpenAI API
+    description: OpenAI 兼容接口
+  - name: Gemini API
+    description: Gemini 兼容接口
+  - name: Claude API
+    description: Claude 兼容接口
+  - name: Ollama API
+    description: Ollama 兼容接口
+  - name: 主进程 (Master)
+    description: 主进程管理接口
+
+paths:
+  # ==================== 认证接口 ====================
+  /api/login:
+    post:
+      tags:
+        - 认证 (Auth)
+      summary: 管理员登录
+      description: 使用密码登录管理后台
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  example: "admin123"
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT Token
+                  expiresIn:
+                    type: integer
+                    description: 过期时间（秒）
+        '401':
+          description: 密码错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/health:
+    get:
+      tags:
+        - 认证 (Auth)
+      summary: 健康检查
+      description: 检查服务健康状态（免认证）
+      responses:
+        '200':
+          description: 服务正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  provider:
+                    type: string
+                    example: "gemini-cli-oauth"
+
+  /api/events:
+    get:
+      tags:
+        - 认证 (Auth)
+      summary: Server-Sent Events
+      description: 实时事件推送（免认证）
+      responses:
+        '200':
+          description: SSE 连接成功
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                example: "data: {\"type\":\"system-log\"}\n\n"
+
+  # ==================== 配置接口 ====================
+  /api/config:
+    get:
+      tags:
+        - 配置 (Config)
+      summary: 获取配置
+      description: 获取当前系统配置
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 配置获取成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - 配置 (Config)
+      summary: 更新配置
+      description: 更新系统配置
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config'
+      responses:
+        '200':
+          description: 配置更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/reload-config:
+    post:
+      tags:
+        - 配置 (Config)
+      summary: 重新加载配置
+      description: 重新加载配置文件
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 配置重载成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/admin-password:
+    post:
+      tags:
+        - 配置 (Config)
+      summary: 更新管理员密码
+      description: 更新登录密码
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - oldPassword
+                - newPassword
+              properties:
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: 密码更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  # ==================== 系统接口 ====================
+  /api/system:
+    get:
+      tags:
+        - 系统 (System)
+      summary: 获取系统信息
+      description: 获取系统状态和性能信息
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 系统信息获取成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemInfo'
+
+  /api/system/download-log:
+    get:
+      tags:
+        - 系统 (System)
+      summary: 下载今日日志
+      description: 下载今天的日志文件
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 日志文件下载成功
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/system/clear-log:
+    post:
+      tags:
+        - 系统 (System)
+      summary: 清除今日日志
+      description: 清除今天的日志文件
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 日志清除成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/restart-service:
+    post:
+      tags:
+        - 系统 (System)
+      summary: 重启服务
+      description: 重启子进程服务
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 服务重启成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/service-mode:
+    get:
+      tags:
+        - 系统 (System)
+      summary: 获取服务模式
+      description: 获取当前运行模式
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 服务模式获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mode:
+                    type: string
+                    example: "production"
+
+  # ==================== 提供商接口 ====================
+  /api/providers:
+    get:
+      tags:
+        - 提供商 (Providers)
+      summary: 获取提供商列表
+      description: 获取所有提供商的账号池信息
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 提供商列表获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    accounts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProviderAccount'
+                    strategy:
+                      type: string
+                    example: "round-robin"
+
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 添加提供商
+      description: 添加新的提供商账号
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - providerType
+                - customName
+              properties:
+                providerType:
+                  type: string
+                  example: "gemini-cli-oauth"
+                customName:
+                  type: string
+                  example: "My Gemini"
+                credentials:
+                  type: object
+      responses:
+        '200':
+          description: 提供商添加成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/providers/{type}:
+    get:
+      tags:
+        - 提供商 (Providers)
+      summary: 获取特定类型提供商
+      description: 获取指定类型的提供商详情
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "gemini-cli-oauth"
+      responses:
+        '200':
+          description: 提供商详情获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accounts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProviderAccount'
+
+  /api/providers/{type}/{uuid}:
+    put:
+      tags:
+        - 提供商 (Providers)
+      summary: 更新提供商
+      description: 更新指定提供商的配置
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: 提供商更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+    delete:
+      tags:
+        - 提供商 (Providers)
+      summary: 删除提供商
+      description: 删除指定的提供商账号
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 提供商删除成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/providers/{type}/reset-health:
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 重置健康状态
+      description: 重置指定类型所有提供商的健康状态
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 健康状态重置成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/providers/{type}/health-check:
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 执行健康检查
+      description: 对指定类型的所有提供商执行健康检查
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 健康检查完成
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        uuid:
+                          type: string
+                        healthy:
+                          type: boolean
+
+  /api/providers/{type}/delete-unhealthy:
+    delete:
+      tags:
+        - 提供商 (Providers)
+      summary: 删除不健康的提供商
+      description: 删除所有不健康的提供商账号
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deletedCount:
+                    type: integer
+
+  /api/providers/{type}/refresh-unhealthy-uuids:
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 刷新不健康的 UUID
+      description: 刷新所有不健康提供商的 UUID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 刷新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/providers/{type}/{uuid}/disable:
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 禁用提供商
+      description: 禁用指定的提供商账号
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 禁用成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/providers/{type}/{uuid}/enable:
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 启用提供商
+      description: 启用指定的提供商账号
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 启用成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/providers/{type}/{uuid}/refresh-uuid:
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 刷新 UUID
+      description: 刷新指定提供商的 UUID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uuid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 刷新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/providers/{type}/generate-auth-url:
+    post:
+      tags:
+        - 提供商 (Providers)
+      summary: 生成授权 URL
+      description: 生成 OAuth 授权 URL
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 授权 URL 生成成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authUrl:
+                    type: string
+                  customName:
+                    type: string
+                  uuid:
+                    type: string
+
+  /api/provider-models:
+    get:
+      tags:
+        - 提供商 (Providers)
+      summary: 获取所有可用模型
+      description: 获取所有提供商的可用模型列表
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 模型列表获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      displayName:
+                        type: string
+
+  /api/provider-models/{type}:
+    get:
+      tags:
+        - 提供商 (Providers)
+      summary: 获取特定类型模型
+      description: 获取指定提供商的可用模型列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 模型列表获取成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    displayName:
+                      type: string
+
+  # ==================== OAuth 接口 ====================
+  /api/oauth/manual-callback:
+    post:
+      tags:
+        - OAuth
+      summary: 手动 OAuth 回调
+      description: 手动处理 OAuth 回调
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                providerType:
+                  type: string
+                code:
+                  type: string
+                state:
+                  type: string
+      responses:
+        '200':
+          description: OAuth 处理成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/kiro/batch-import-tokens:
+    post:
+      tags:
+        - OAuth
+      summary: 批量导入 Kiro Token
+      description: 批量导入 Kiro OAuth Token
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tokens:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      customName:
+                        type: string
+      responses:
+        '200':
+          description: 导入成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/gemini/batch-import-tokens:
+    post:
+      tags:
+        - OAuth
+      summary: 批量导入 Gemini Token
+      description: 批量导入 Gemini OAuth Token
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tokens:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      customName:
+                        type: string
+      responses:
+        '200':
+          description: 导入成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/kiro/import-aws-credentials:
+    post:
+      tags:
+        - OAuth
+      summary: 导入 AWS 凭证
+      description: 导入 Kiro AWS 凭证
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                awsAccessKeyId:
+                  type: string
+                awsSecretAccessKey:
+                  type: string
+                region:
+                  type: string
+                  example: "us-east-1"
+      responses:
+        '200':
+          description: 导入成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  # ==================== 配置文件接口 ====================
+  /api/upload-oauth-credentials:
+    post:
+      tags:
+        - 配置文件 (Config Files)
+      summary: 上传 OAuth 凭证
+      description: 上传 OAuth 凭证文件
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                providerType:
+                  type: string
+                  example: "gemini-cli-oauth"
+                customName:
+                  type: string
+      responses:
+        '200':
+          description: 上传成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/upload-configs:
+    get:
+      tags:
+        - 配置文件 (Config Files)
+      summary: 获取配置文件列表
+      description: 获取 configs 目录下的配置文件列表
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 文件列表获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          type: string
+                        size:
+                          type: integer
+                        modifiedAt:
+                          type: string
+                          format: date-time
+                        bound:
+                          type: boolean
+
+  /api/upload-configs/view/{path}:
+    get:
+      tags:
+        - 配置文件 (Config Files)
+      summary: 查看配置文件
+      description: 查看指定配置文件的内容
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 文件内容获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  path:
+                    type: string
+                  content:
+                    type: string
+                  size:
+                    type: integer
+                  modifiedAt:
+                    type: string
+                    format: date-time
+
+  /api/upload-configs/delete/{path}:
+    delete:
+      tags:
+        - 配置文件 (Config Files)
+      summary: 删除配置文件
+      description: 删除指定的配置文件
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 文件删除成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /api/upload-configs/download-all:
+    get:
+      tags:
+        - 配置文件 (Config Files)
+      summary: 下载所有配置
+      description: 下载所有配置文件的 ZIP 包
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: ZIP 文件下载成功
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+
+  /api/upload-configs/delete-unbound:
+    delete:
+      tags:
+        - 配置文件 (Config Files)
+      summary: 删除未绑定的配置文件
+      description: 删除所有未绑定到提供商的配置文件
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deletedCount:
+                    type: integer
+
+  # ==================== 使用量接口 ====================
+  /api/usage:
+    get:
+      tags:
+        - 使用量 (Usage)
+      summary: 获取所有提供商使用量
+      description: 获取所有提供商的使用量统计
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 使用量获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  properties:
+                    totalTokens:
+                      type: integer
+                    totalRequests:
+                      type: integer
+                    todayTokens:
+                      type: integer
+                    todayRequests:
+                      type: integer
+
+  /api/usage/supported-providers:
+    get:
+      tags:
+        - 使用量 (Usage)
+      summary: 获取支持的提供商
+      description: 获取支持使用量查询的提供商列表
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 提供商列表获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  providers:
+                    type: array
+                    items:
+                      type: string
+
+  /api/usage/{type}:
+    get:
+      tags:
+        - 使用量 (Usage)
+      summary: 获取特定提供商使用量
+      description: 获取指定提供商的使用量统计
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 使用量获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalTokens:
+                    type: integer
+                  totalRequests:
+                    type: integer
+                  todayTokens:
+                    type: integer
+                  todayRequests:
+                    type: integer
+                  detailedUsage:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        tokens:
+                          type: integer
+                        requests:
+                          type: integer
+
+  # ==================== 更新接口 ====================
+  /api/check-update:
+    get:
+      tags:
+        - 更新 (Update)
+      summary: 检查更新
+      description: 检查是否有新版本可用
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 更新检查完成
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hasUpdate:
+                    type: boolean
+                  currentVersion:
+                    type: string
+                  latestVersion:
+                    type: string
+                  releaseNotes:
+                    type: string
+
+  /api/update:
+    post:
+      tags:
+        - 更新 (Update)
+      summary: 执行更新
+      description: 执行系统更新
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 更新执行成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  # ==================== 插件接口 ====================
+  /api/plugins:
+    get:
+      tags:
+        - 插件 (Plugins)
+      summary: 获取插件列表
+      description: 获取所有插件的列表和状态
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 插件列表获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plugins:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        version:
+                          type: string
+                        enabled:
+                          type: boolean
+                        type:
+                          type: string
+                          enum: [auth, middleware]
+                        priority:
+                          type: integer
+
+  /api/plugins/{name}/toggle:
+    post:
+      tags:
+        - 插件 (Plugins)
+      summary: 切换插件状态
+      description: 启用或禁用指定的插件
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 插件状态切换成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  # ==================== OpenAI API ====================
+  /v1/chat/completions:
+    post:
+      tags:
+        - OpenAI API
+      summary: 聊天完成
+      description: OpenAI 兼容的聊天完成接口
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - model
+                - messages
+              properties:
+                model:
+                  type: string
+                  example: "gemini-2.0-flash-exp"
+                messages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role:
+                        type: string
+                        enum: [system, user, assistant]
+                      content:
+                        type: string
+                stream:
+                  type: boolean
+                  default: false
+                temperature:
+                  type: number
+                  minimum: 0
+                  maximum: 2
+                max_tokens:
+                  type: integer
+      responses:
+        '200':
+          description: 聊天完成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+
+  /v1/responses:
+    post:
+      tags:
+        - OpenAI API
+      summary: 响应生成
+      description: OpenAI 兼容的响应生成接口
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+      responses:
+        '200':
+          description: 响应生成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+
+  /v1/models:
+    get:
+      tags:
+        - OpenAI API
+      summary: 获取模型列表
+      description: 获取可用的模型列表
+      security:
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: 模型列表获取成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelsResponse'
+
+  # ==================== Gemini API ====================
+  /v1beta/models:
+    get:
+      tags:
+        - Gemini API
+      summary: 获取模型列表
+      description: Gemini 兼容的模型列表接口
+      security:
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: 模型列表获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  models:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        displayName:
+                          type: string
+
+  /v1beta/models/{model}:generateContent:
+    post:
+      tags:
+        - Gemini API
+      summary: 生成内容
+      description: Gemini 兼容的内容生成接口
+      security:
+        - apiKeyAuth: []
+      parameters:
+        - name: model
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "gemini-2.0-flash-exp"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contents:
+                  type: array
+                  items:
+                    type: object
+                generationConfig:
+                  type: object
+      responses:
+        '200':
+          description: 内容生成成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1beta/models/{model}:streamGenerateContent:
+    post:
+      tags:
+        - Gemini API
+      summary: 流式生成内容
+      description: Gemini 兼容的流式内容生成接口
+      security:
+        - apiKeyAuth: []
+      parameters:
+        - name: model
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: 流式生成成功
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
+  # ==================== Claude API ====================
+  /v1/messages:
+    post:
+      tags:
+        - Claude API
+      summary: 发送消息
+      description: Claude 兼容的消息接口
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - model
+                - max_tokens
+                - messages
+              properties:
+                model:
+                  type: string
+                  example: "claude-3-5-sonnet-20241022"
+                max_tokens:
+                  type: integer
+                messages:
+                  type: array
+      responses:
+        '200':
+          description: 消息发送成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # ==================== Ollama API ====================
+  /ollama/api/tags:
+    get:
+      tags:
+        - Ollama API
+      summary: 获取模型标签
+      description: Ollama 兼容的模型列表接口
+      security:
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: 模型列表获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /ollama/api/chat:
+    post:
+      tags:
+        - Ollama API
+      summary: 聊天
+      description: Ollama 兼容的聊天接口
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                messages:
+                  type: array
+                stream:
+                  type: boolean
+      responses:
+        '200':
+          description: 聊天成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /ollama/api/generate:
+    post:
+      tags:
+        - Ollama API
+      summary: 生成
+      description: Ollama 兼容的生成接口
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: 生成成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /ollama/api/show:
+    post:
+      tags:
+        - Ollama API
+      summary: 显示模型详情
+      description: Ollama 兼容的模型详情接口
+      security:
+        - apiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: 模型详情获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # ==================== 主进程接口 ====================
+  /master/status:
+    get:
+      tags:
+        - 主进程 (Master)
+      summary: 获取主进程状态
+      description: 获取主进程和子进程的状态信息
+      responses:
+        '200':
+          description: 状态获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  master:
+                    type: object
+                    properties:
+                      pid:
+                        type: integer
+                      uptime:
+                        type: number
+                      memoryUsage:
+                        type: object
+                  worker:
+                    type: object
+                    properties:
+                      pid:
+                        type: integer
+                      startTime:
+                        type: string
+                      restartCount:
+                        type: integer
+                      isRunning:
+                        type: boolean
+
+  /master/health:
+    get:
+      tags:
+        - 主进程 (Master)
+      summary: 主进程健康检查
+      description: 检查主进程和子进程的健康状态
+      responses:
+        '200':
+          description: 健康状态
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  workerRunning:
+                    type: boolean
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /master/restart:
+    post:
+      tags:
+        - 主进程 (Master)
+      summary: 重启子进程
+      description: 重启子进程服务
+      responses:
+        '200':
+          description: 重启成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  pid:
+                    type: integer
+
+  /master/stop:
+    post:
+      tags:
+        - 主进程 (Master)
+      summary: 停止子进程
+      description: 停止子进程服务
+      responses:
+        '200':
+          description: 停止成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+  /master/start:
+    post:
+      tags:
+        - 主进程 (Master)
+      summary: 启动子进程
+      description: 启动子进程服务
+      responses:
+        '200':
+          description: 启动成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  pid:
+                    type: integer
+
+# ==================== 组件定义 ====================
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Token（通过 /api/login 获取）
+
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: API Key（支持多种格式）
+      x-api-key: API Key（Claude 风格）
+      x-goog-api-key: API Key（Gemini 风格）
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+
+    Success:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "操作成功"
+
+    Config:
+      type: object
+      properties:
+        REQUIRED_API_KEY:
+          type: string
+          example: ""
+        SERVER_PORT:
+          type: integer
+          example: 3000
+        HOST:
+          type: string
+          example: "0.0.0.0"
+        MODEL_PROVIDER:
+          type: string
+          example: "gemini-cli-oauth"
+        PROXY_URL:
+          type: string
+          example: "http://127.0.0.1:1089"
+        PROXY_ENABLED_PROVIDERS:
+          type: array
+          items:
+            type: string
+        MAX_ERROR_COUNT:
+          type: integer
+          example: 3
+        CRON_REFRESH_TOKEN:
+          type: boolean
+          example: false
+        LOG_LEVEL:
+          type: string
+          enum: [debug, info, warn, error]
+        LOG_OUTPUT_MODE:
+          type: string
+          enum: [all, console, file]
+
+    SystemInfo:
+      type: object
+      properties:
+        version:
+          type: string
+        nodeVersion:
+          type: string
+        uptime:
+          type: number
+        memoryUsage:
+          type: object
+          properties:
+            rss:
+              type: number
+            heapTotal:
+              type: number
+            heapUsed:
+              type: number
+        cpuUsage:
+          type: object
+        activeProviders:
+          type: array
+          items:
+            type: string
+        totalRequests:
+          type: integer
+        totalErrors:
+          type: integer
+
+    ProviderAccount:
+      type: object
+      properties:
+        uuid:
+          type: string
+        customName:
+          type: string
+        enabled:
+          type: boolean
+        healthy:
+          type: boolean
+        errorCount:
+          type: integer
+        lastUsed:
+          type: string
+          format: date-time
+
+    ChatCompletionRequest:
+      type: object
+      required:
+        - model
+        - messages
+      properties:
+        model:
+          type: string
+          example: "gemini-2.0-flash-exp"
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [system, user, assistant]
+              content:
+                type: string
+        stream:
+          type: boolean
+          default: false
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        max_tokens:
+          type: integer
+
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          example: "chat.completion"
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              message:
+                type: object
+                properties:
+                  role:
+                    type: string
+                  content:
+                    type: string
+              finish_reason:
+                type: string
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            completion_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+
+    ModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: "list"
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              object:
+                type: string
+                example: "model"
+              created:
+                type: integer
+              owned_by:
+                type: string
+
+  responses:
+    Unauthorized:
+      description: 未授权访问
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              message: "Unauthorized access, please login first"
+              code: "UNAUTHORIZED"

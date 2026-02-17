@@ -209,7 +209,7 @@ export async function checkAuth(req) {
  */
 export async function handleLoginRequest(req, res) {
     if (req.method !== 'POST') {
-        res.writeHead(405, { 'Content-Type': 'application/json' });
+        res.writeHead(405, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ success: false, message: 'Only POST requests are supported' }));
         return true;
     }
@@ -219,7 +219,7 @@ export async function handleLoginRequest(req, res) {
         const { password } = requestData;
         
         if (!password) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ success: false, message: 'Password cannot be empty' }));
             return true;
         }
@@ -238,7 +238,7 @@ export async function handleLoginRequest(req, res) {
                 expiryTime
             });
 
-             res.writeHead(200, { 'Content-Type': 'application/json' });
+             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: true,
                 message: 'Login successful',
@@ -246,7 +246,7 @@ export async function handleLoginRequest(req, res) {
                 expiresIn: `${CONFIG.LOGIN_EXPIRY || 3600} seconds`
             }));
         } else {
-            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.writeHead(401, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 message: 'Incorrect password, please try again'
@@ -254,7 +254,7 @@ export async function handleLoginRequest(req, res) {
         }
     } catch (error) {
         logger.error('[Auth] Login processing error:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: false,
             message: error.message || 'Server error'

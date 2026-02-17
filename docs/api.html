@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIClient-2-API - API 文档</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar h3 {
+            font-size: 0.9em;
+            color: #667eea;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            margin-top: 20px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .sidebar h3:first-child {
+            margin-top: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .sidebar li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar a {
+            color: #555;
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .sidebar a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            margin: 25px 0 15px 0;
+        }
+
+        .section h4 {
+            color: #555;
+            margin: 20px 0 10px 0;
+        }
+
+        .endpoint {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .method.get { background: #61affe; }
+        .method.post { background: #49cc90; }
+        .method.put { background: #fca130; }
+        .method.delete { background: #f93e3e; }
+
+        .url {
+            font-family: 'Courier New', monospace;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .description {
+            margin: 15px 0;
+            color: #666;
+        }
+
+        .parameters {
+            margin: 20px 0;
+        }
+
+        .parameter {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .parameter-name {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .parameter-type {
+            color: #764ba2;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .parameter-required {
+            color: #f93e3e;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        .response {
+            margin: 20px 0;
+        }
+
+        .response-code {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: #49cc90;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .response-code.error {
+            background: #f93e3e;
+        }
+
+        .response-code.warning {
+            background: #fca130;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .auth-method {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #4caf50;
+        }
+
+        .auth-method h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .auth-method ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .auth-method li {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .auth-method li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .tag.auth { background: #e3f2fd; color: #1976d2; }
+        .tag.config { background: #f3e5f5; color: #7b1fa2; }
+        .tag.system { background: #e8f5e9; color: #388e3c; }
+        .tag.provider { background: #fff3e0; color: #f57c00; }
+        .tag.oauth { background: #fce4ec; color: #c2185b; }
+        .tag.usage { background: #e0f2f1; color: #009688; }
+        .tag.update { background: #f3e5f5; color: #6a1b9a; }
+        .tag.plugin { background: #e1bee7; color: #7b1fa2; }
+        .tag.openapi { background: #e3f2fd; color: #1565c0; }
+        .tag.gemini { background: #fff8e1; color: #f9a825; }
+        .tag.claude { background: #fce4ec; color: #ad1457; }
+        .tag.ollama { background: #e0f2f1; color: #00695c; }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3>快速开始</h3>
+        <ul>
+            <li><a href="#introduction">简介</a></li>
+            <li><a href="#authentication">认证方式</a></li>
+            <li><a href="#quick-start">快速开始</a></li>
+        </ul>
+
+        <h3>管理后台 API</h3>
+        <ul>
+            <li><a href="#api-auth">认证接口</a></li>
+            <li><a href="#api-config">配置管理</a></li>
+            <li><a href="#api-system">系统管理</a></li>
+            <li><a href="#api-providers">提供商管理</a></li>
+            <li><a href="#api-oauth">OAuth 管理</a></li>
+            <li><a href="#api-config-files">配置文件</a></li>
+            <li><a href="#api-usage">使用量查询</a></li>
+            <li><a href="#api-update">更新管理</a></li>
+            <li><a href="#api-plugins">插件管理</a></li>
+        </ul>
+
+        <h3>核心 AI API</h3>
+        <ul>
+            <li><a href="#api-openai">OpenAI 兼容</a></li>
+            <li><a href="#api-gemini">Gemini 兼容</a></li>
+            <li><a href="#api-claude">Claude 兼容</a></li>
+            <li><a href="#api-ollama">Ollama 兼容</a></li>
+        </ul>
+
+        <h3>主进程 API</h3>
+        <ul>
+            <li><a href="#api-master">主进程管理</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="header">
+                <h1>AIClient-2-API</h1>
+                <p>大模型 API 统一代理服务 - 完整 API 文档</p>
+            </div>
+
+            <div class="section" id="introduction">
+                <h2>📖 简介</h2>
+                <p>AIClient-2-API 是一个将多种大模型 API（Gemini, Claude, OpenAI 等）统一封装为 OpenAI 兼容接口的代理服务。</p>
+                
+                <h3>功能特性</h3>
+                <ul>
+                    <li>支持多种大模型提供商（Gemini, Claude, OpenAI, Qwen, iFlow, Zhipu 等）</li>
+                    <li>OpenAI 兼容接口</li>
+                    <li>多账号轮询和智能故障转移</li>
+                    <li>实时日志推送（Server-Sent Events）</li>
+                    <li>Web UI 管理界面</li>
+                    <li>OAuth 授权机制</li>
+                </ul>
+            </div>
+
+            <div class="section" id="authentication">
+                <h2>🔐 认证方式</h2>
+                
+                <div class="auth-method">
+                    <h4>管理后台 API 认证</h4>
+                    <ul>
+                        <li><strong>方式：</strong>Bearer Token（JWT）</li>
+                        <li><strong>获取方式：</strong>POST /api/login</li>
+                        <li><strong>有效期：</strong>7 天（604800 秒）</li>
+                        <li><strong>请求头：</strong>Authorization: Bearer {token}</li>
+                    </ul>
+                </div>
+
+                <div class="auth-method">
+                    <h4>核心 AI API 认证</h4>
+                    <p>支持多种 API Key 格式：</p>
+                    <ul>
+                        <li><strong>OpenAI 风格：</strong>Authorization: Bearer {key}</li>
+                        <li><strong>Claude 风格：</strong>x-api-key: {key}</li>
+                        <li><strong>Gemini 风格：</strong>x-goog-api-key: {key}</li>
+                        <li><strong>URL 参数：</strong>?key={key}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section" id="quick-start">
+                <h2>🚀 快速开始</h2>
+                
+                <h3>1. 安装依赖</h3>
+                <div class="code-block"><pre>npm install</pre></div>
+
+                <h3>2. 配置服务</h3>
+                <p>复制配置模板并修改：</p>
+                <div class="code-block"><pre>cp configs/config.json.example configs/config.json
+vi configs/config.json</pre></div>
+
+                <h3>3. 启动服务</h3>
+                <div class="code-block"><pre>npm start</pre></div>
+
+                <h3>4. 访问界面</h3>
+                <p>打开浏览器访问：<a href="http://localhost:3000" target="_blank">http://localhost:3000</a></p>
+            </div>
+
+            <div class="section" id="api-auth">
+                <h2>🔑 认证接口</h2>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="url">/api/login</span>
+                    <p class="description">管理员登录</p>
+                    
+                    <div class="parameters">
+                        <h4>请求体</h4>
+                        <div class="code-block"><pre>{
+  "password": "admin123"
+}</pre></div>
+                    </div>
+
+                    <div class="response">
+                        <span class="response-code">200</span>
+                        <p>登录成功</p>
+                        <div class="code-block"><pre>{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresIn": 604800
+}</pre></div>
+
+                        <span class="response-code error">401</span>
+                        <p>密码错误</p>
+                        <div class="code-block"><pre>{
+  "error": {
+    "message": "Invalid password"
+  }
+}</pre></div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="url">/api/health</span>
+                    <p class="description">健康检查（免认证）</p>
+                    
+                    <div class="response">
+                        <span class="response-code">200</span>
+                        <p>服务正常</p>
+                        <div class="code-block"><pre>{
+  "status": "healthy",
+  "timestamp": "2026-02-15T12:00:00.000Z",
+  "provider": "gemini-cli-oauth"
+}</pre></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section" id="api-config">
+                <h2>⚙️ 配置管理</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="url">/api/config</span>
+                    <p class="description">获取当前系统配置</p>
+                    <p class="description"><strong>需要认证：</strong>Bearer Token</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="url">/api/config</span>
+                    <p class="description">更新系统配置</p>
+                    <p class="description"><strong>需要认证：</strong>Bearer Token</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="url">/api/reload-config</span>
+                    <p class="description">重新加载配置文件</p>
+                    <p class="description"><strong>需要认证：</strong>Bearer Token</p>
+                </div>
+            </div>
+
+            <div class="section" id="api-providers">
+                <h2>🏢 提供商管理</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="url">/api/providers</span>
+                    <p class="description">获取所有提供商的账号池信息</p>
+                    <p class="description"><strong>需要认证：</strong>Bearer Token</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="url">/api/providers</span>
+                    <p class="description">添加新的提供商账号</p>
+                    <p class="description"><strong>需要认证：</strong>Bearer Token</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method put">PUT</span>
+                    <span class="url">/api/providers/{type}/{uuid}</span>
+                    <p class="description">更新指定提供商的配置</p>
+                    <p class="description"><strong>需要认证：</strong>Bearer Token</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method delete">DELETE</span>
+                    <span class="url">/api/providers/{type}/{uuid}</span>
+                    <p class="description">删除指定的提供商账号</p>
+                    <p class="description"><strong>需要认证：</strong>Bearer Token</p>
+                </div>
+            </div>
+
+            <div class="section" id="api-openai">
+                <h2>🤖 OpenAI 兼容接口</h2>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="url">/v1/chat/completions</span>
+                    <p class="description">OpenAI 兼容的聊天完成接口</p>
+                    <p class="description"><strong>需要认证：</strong>API Key</p>
+
+                    <div class="parameters">
+                        <h4>请求体示例</h4>
+                        <div class="code-block"><pre>{
+  "model": "gemini-2.0-flash-exp",
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是一个有用的助手。"
+    },
+    {
+      "role": "user",
+      "content": "你好！"
+    }
+  ],
+  "stream": false,
+  "temperature": 0.7,
+  "max_tokens": 1000
+}</pre></div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="url">/v1/models</span>
+                    <p class="description">获取可用的模型列表</p>
+                    <p class="description"><strong>需要认证：</strong>API Key</p>
+                </div>
+            </div>
+
+            <div class="section" id="api-master">
+                <h2>🎛️ 主进程管理</h2>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="url">/master/status</span>
+                    <p class="description">获取主进程和子进程的状态信息</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method post">POST</span>
+                    <span class="url">/master/restart</span>
+                    <p class="description">重启子进程服务</p>
+                </div>
+
+                <div class="endpoint">
+                    <span class="method get">GET</span>
+                    <span class="url">/master/health</span>
+                    <p class="description">检查主进程和子进程的健康状态</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📚 更多信息</h2>
+                <p>完整的 OpenAPI 3.0 规范文件请查看：</p>
+                <p><a href="/docs/openapi.yaml" target="_blank">docs/openapi.yaml</a></p>
+                <p>可以使用 Swagger UI 或 ReDoc 等工具可视化查看：</p>
+                <ul>
+                    <li><a href="https://editor.swagger.io/" target="_blank">Swagger Editor</a></li>
+                    <li><a href="https://redocly.github.io/redoc/" target="_blank">ReDoc</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

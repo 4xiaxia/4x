@@ -261,9 +261,9 @@ export function isAuthorized(req, requestUrl, REQUIRED_API_KEY) {
  */
 export async function handleUnifiedResponse(res, responsePayload, isStream) {
     if (isStream) {
-        res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "keep-alive", "Transfer-Encoding": "chunked" });
+        res.writeHead(200, { "Content-Type": "text/event-stream; charset=utf-8", "Cache-Control": "no-cache", "Connection": "keep-alive", "Transfer-Encoding": "chunked" });
     } else {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     }
 
     if (isStream) {
@@ -803,7 +803,7 @@ export async function handleModelListRequest(req, res, service, endpointType, CO
         }
 
         logger.info(`[ModelList Response] Sending model list to client: ${JSON.stringify(clientModelList)}`);
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(clientModelList));
     } catch (error) {
         logger.error('\n[Server] Error during model list processing:', error.stack);
@@ -1037,7 +1037,7 @@ export function handleError(res, error, provider = null) {
     }
 
     if (!res.headersSent) {
-        res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+        res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
     }
 
     const errorPayload = {

@@ -259,7 +259,7 @@ async function handleKiroBuilderIDDeviceCode(currentConfig, options = {}) {
     const regResponse = await fetchWithProxy(`${ssoOIDCEndpoint}/client/register`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
             'User-Agent': 'KiroIDE'
         },
         body: JSON.stringify({
@@ -280,7 +280,7 @@ async function handleKiroBuilderIDDeviceCode(currentConfig, options = {}) {
     const authResponse = await fetchWithProxy(`${ssoOIDCEndpoint}/device_authorization`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json; charset=utf-8'
         },
         body: JSON.stringify({
             clientId: regData.clientId,
@@ -364,7 +364,7 @@ async function pollKiroBuilderIDToken(clientId, clientSecret, deviceCode, interv
             const response = await fetchWithProxy(`${ssoOIDCEndpoint}/token`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=utf-8',
                     'User-Agent': 'KiroIDE'
                 },
                 body: JSON.stringify({
@@ -543,7 +543,7 @@ function createKiroHttpCallbackServer(port, codeVerifier, expectedState, options
                     const tokenResponse = await fetchWithProxy(`${KIRO_OAUTH_CONFIG.authServiceEndpoint}/oauth/token`, {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json; charset=utf-8',
                             'User-Agent': 'AIClient-2-API/1.0.0'
                         },
                         body: JSON.stringify({
@@ -1075,7 +1075,7 @@ export async function importAwsCredentials(credentials, skipDuplicateCheck = fal
             const refreshResponse = await fetchWithProxy(refreshUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json; charset=utf-8'
                 },
                 body: JSON.stringify({
                     refreshToken: credentials.refreshToken,

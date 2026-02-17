@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 import path from 'path';
+import logger from '../utils/logger.js';
 
 // Import UI modules
 import * as auth from '../ui-modules/auth.js';
@@ -24,16 +25,19 @@ export { broadcastEvent, initializeUIManagement, handleUploadOAuthCredentials, u
 export async function serveStaticFiles(pathParam, res) {
     const filePath = path.join(process.cwd(), 'static', pathParam === '/' || pathParam === '/index.html' ? 'index.html' : pathParam.replace('/static/', ''));
 
+    logger.info(`[UI] Serving static file: ${pathParam} -> ${filePath} (exists: ${existsSync(filePath)})`);
+
     if (existsSync(filePath)) {
         const ext = path.extname(filePath);
         const contentType = {
-            '.html': 'text/html',
-            '.css': 'text/css',
-            '.js': 'application/javascript',
+            '.html': 'text/html; charset=utf-8',
+            '.css': 'text/css; charset=utf-8',
+            '.js': 'application/javascript; charset=utf-8',
+            '.json': 'application/json; charset=utf-8',
             '.png': 'image/png',
             '.jpg': 'image/jpeg',
             '.ico': 'image/x-icon'
-        }[ext] || 'text/plain';
+        }[ext] || 'text/plain; charset=utf-8';
 
         res.writeHead(200, { 'Content-Type': contentType });
         res.end(readFileSync(filePath));
@@ -69,7 +73,7 @@ export async function handleUIApiRequests(method, pathParam, req, res, currentCo
         const isAuth = await auth.checkAuth(req);
         if (!isAuth) {
             res.writeHead(401, {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'Content-Type, Authorization'
             });

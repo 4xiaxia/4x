@@ -438,7 +438,7 @@ export async function handleOllamaTags(req, res, apiService, currentConfig, prov
             logger.warn('[Ollama] No healthy providers available to fetch models');
             const response = { models: [] };
             res.writeHead(200, {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
                 'Access-Control-Allow-Origin': '*',
                 'Server': `ollama/${OLLAMA_VERSION}`
             });
@@ -455,7 +455,7 @@ export async function handleOllamaTags(req, res, apiService, currentConfig, prov
         const response = { models: allModels };
         
         res.writeHead(200, {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
             'Access-Control-Allow-Origin': '*',
             'Server': `ollama/${OLLAMA_VERSION}`
         });
@@ -480,7 +480,7 @@ export async function handleOllamaShow(req, res) {
         const showResponse = ollamaConverter.toOllamaShowResponse(modelName);
         
         res.writeHead(200, { 
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
             'Access-Control-Allow-Origin': '*',
             'Server': `ollama/${OLLAMA_VERSION}`
         });
@@ -499,7 +499,7 @@ export function handleOllamaVersion(res) {
         const response = { version: OLLAMA_VERSION };
         
         res.writeHead(200, { 
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
             'Access-Control-Allow-Origin': '*',
             'Server': `ollama/${OLLAMA_VERSION}`
         });
@@ -597,7 +597,7 @@ export async function handleOllamaChat(req, res, apiService, currentConfig, prov
 
             try {
                 res.writeHead(200, {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=utf-8',
                     'Transfer-Encoding': 'chunked',
                     'Access-Control-Allow-Origin': '*',
                     'Server': `ollama/${OLLAMA_VERSION}`
@@ -640,7 +640,7 @@ export async function handleOllamaChat(req, res, apiService, currentConfig, prov
             const ollamaResponse = ollamaConverter.convertResponse(backendResponse, sourceProtocol, ollamaRequest.model);
             
             res.writeHead(200, { 
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
                 'Access-Control-Allow-Origin': '*',
                 'Server': `ollama/${OLLAMA_VERSION}`
             });
@@ -739,7 +739,7 @@ export async function handleOllamaGenerate(req, res, apiService, currentConfig, 
 
             try {
                 res.writeHead(200, {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=utf-8',
                     'Transfer-Encoding': 'chunked',
                     'Access-Control-Allow-Origin': '*',
                     'Server': `ollama/${OLLAMA_VERSION}`
@@ -782,7 +782,7 @@ export async function handleOllamaGenerate(req, res, apiService, currentConfig, 
             const ollamaResponse = ollamaConverter.toOllamaGenerateResponse(backendResponse, ollamaRequest.model);
             
             res.writeHead(200, { 
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
                 'Access-Control-Allow-Origin': '*',
                 'Server': `ollama/${OLLAMA_VERSION}`
             });

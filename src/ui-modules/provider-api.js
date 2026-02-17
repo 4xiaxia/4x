@@ -22,7 +22,7 @@ export async function handleGetProviders(req, res, currentConfig, providerPoolMa
         logger.warn('[UI API] Failed to load provider pools:', error.message);
     }
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(providerPools));
     return true;
 }
@@ -45,7 +45,7 @@ export async function handleGetProviderType(req, res, currentConfig, providerPoo
     }
 
     const providers = providerPools[providerType] || [];
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify({
         providerType,
         providers,
@@ -60,7 +60,7 @@ export async function handleGetProviderType(req, res, currentConfig, providerPoo
  */
 export async function handleGetProviderModels(req, res) {
     const allModels = getAllProviderModels();
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(allModels));
     return true;
 }
@@ -70,7 +70,7 @@ export async function handleGetProviderModels(req, res) {
  */
 export async function handleGetProviderTypeModels(req, res, providerType) {
     const models = getProviderModels(providerType);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify({
         providerType,
         models
@@ -87,7 +87,7 @@ export async function handleAddProvider(req, res, currentConfig, providerPoolMan
         const { providerType, providerConfig } = body;
 
         if (!providerType || !providerConfig) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'providerType and providerConfig are required' } }));
             return true;
         }
@@ -150,7 +150,7 @@ export async function handleAddProvider(req, res, currentConfig, providerPoolMan
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: 'Provider added successfully',
@@ -159,7 +159,7 @@ export async function handleAddProvider(req, res, currentConfig, providerPoolMan
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -174,7 +174,7 @@ export async function handleUpdateProvider(req, res, currentConfig, providerPool
         const { providerConfig } = body;
 
         if (!providerConfig) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'providerConfig is required' } }));
             return true;
         }
@@ -188,7 +188,7 @@ export async function handleUpdateProvider(req, res, currentConfig, providerPool
                 const fileContent = readFileSync(filePath, 'utf-8');
                 providerPools = JSON.parse(fileContent);
             } catch (readError) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({ error: { message: 'Provider pools file not found' } }));
                 return true;
             }
@@ -199,7 +199,7 @@ export async function handleUpdateProvider(req, res, currentConfig, providerPool
         const providerIndex = providers.findIndex(p => p.uuid === providerUuid);
         
         if (providerIndex === -1) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Provider not found' } }));
             return true;
         }
@@ -237,7 +237,7 @@ export async function handleUpdateProvider(req, res, currentConfig, providerPool
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: 'Provider updated successfully',
@@ -245,7 +245,7 @@ export async function handleUpdateProvider(req, res, currentConfig, providerPool
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -265,7 +265,7 @@ export async function handleDeleteProvider(req, res, currentConfig, providerPool
                 const fileContent = readFileSync(filePath, 'utf-8');
                 providerPools = JSON.parse(fileContent);
             } catch (readError) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({ error: { message: 'Provider pools file not found' } }));
                 return true;
             }
@@ -276,7 +276,7 @@ export async function handleDeleteProvider(req, res, currentConfig, providerPool
         const providerIndex = providers.findIndex(p => p.uuid === providerUuid);
         
         if (providerIndex === -1) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Provider not found' } }));
             return true;
         }
@@ -308,7 +308,7 @@ export async function handleDeleteProvider(req, res, currentConfig, providerPool
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: 'Provider deleted successfully',
@@ -316,7 +316,7 @@ export async function handleDeleteProvider(req, res, currentConfig, providerPool
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -336,7 +336,7 @@ export async function handleDisableEnableProvider(req, res, currentConfig, provi
                 const fileContent = readFileSync(filePath, 'utf-8');
                 providerPools = JSON.parse(fileContent);
             } catch (readError) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({ error: { message: 'Provider pools file not found' } }));
                 return true;
             }
@@ -347,7 +347,7 @@ export async function handleDisableEnableProvider(req, res, currentConfig, provi
         const providerIndex = providers.findIndex(p => p.uuid === providerUuid);
         
         if (providerIndex === -1) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Provider not found' } }));
             return true;
         }
@@ -381,7 +381,7 @@ export async function handleDisableEnableProvider(req, res, currentConfig, provi
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: `Provider ${action}d successfully`,
@@ -389,7 +389,7 @@ export async function handleDisableEnableProvider(req, res, currentConfig, provi
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -409,7 +409,7 @@ export async function handleResetProviderHealth(req, res, currentConfig, provide
                 const fileContent = readFileSync(filePath, 'utf-8');
                 providerPools = JSON.parse(fileContent);
             } catch (readError) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({ error: { message: 'Provider pools file not found' } }));
                 return true;
             }
@@ -419,7 +419,7 @@ export async function handleResetProviderHealth(req, res, currentConfig, provide
         const providers = providerPools[providerType] || [];
         
         if (providers.length === 0) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'No providers found for this type' } }));
             return true;
         }
@@ -457,7 +457,7 @@ export async function handleResetProviderHealth(req, res, currentConfig, provide
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: `Successfully reset health status for ${resetCount} providers`,
@@ -466,7 +466,7 @@ export async function handleResetProviderHealth(req, res, currentConfig, provide
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -486,7 +486,7 @@ export async function handleDeleteUnhealthyProviders(req, res, currentConfig, pr
                 const fileContent = readFileSync(filePath, 'utf-8');
                 providerPools = JSON.parse(fileContent);
             } catch (readError) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({ error: { message: 'Provider pools file not found' } }));
                 return true;
             }
@@ -496,7 +496,7 @@ export async function handleDeleteUnhealthyProviders(req, res, currentConfig, pr
         const providers = providerPools[providerType] || [];
         
         if (providers.length === 0) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'No providers found for this type' } }));
             return true;
         }
@@ -506,7 +506,7 @@ export async function handleDeleteUnhealthyProviders(req, res, currentConfig, pr
         const healthyProviders = providers.filter(p => p.isHealthy);
         
         if (unhealthyProviders.length === 0) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: true,
                 message: 'No unhealthy providers to delete',
@@ -543,7 +543,7 @@ export async function handleDeleteUnhealthyProviders(req, res, currentConfig, pr
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: `Successfully deleted ${unhealthyProviders.length} unhealthy providers`,
@@ -553,7 +553,7 @@ export async function handleDeleteUnhealthyProviders(req, res, currentConfig, pr
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -573,7 +573,7 @@ export async function handleRefreshUnhealthyUuids(req, res, currentConfig, provi
                 const fileContent = readFileSync(filePath, 'utf-8');
                 providerPools = JSON.parse(fileContent);
             } catch (readError) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({ error: { message: 'Provider pools file not found' } }));
                 return true;
             }
@@ -583,7 +583,7 @@ export async function handleRefreshUnhealthyUuids(req, res, currentConfig, provi
         const providers = providerPools[providerType] || [];
         
         if (providers.length === 0) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'No providers found for this type' } }));
             return true;
         }
@@ -604,7 +604,7 @@ export async function handleRefreshUnhealthyUuids(req, res, currentConfig, provi
         }
 
         if (refreshedProviders.length === 0) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: true,
                 message: 'No unhealthy providers to refresh',
@@ -634,7 +634,7 @@ export async function handleRefreshUnhealthyUuids(req, res, currentConfig, provi
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: `Successfully refreshed UUIDs for ${refreshedProviders.length} unhealthy providers`,
@@ -644,7 +644,7 @@ export async function handleRefreshUnhealthyUuids(req, res, currentConfig, provi
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -656,7 +656,7 @@ export async function handleRefreshUnhealthyUuids(req, res, currentConfig, provi
 export async function handleHealthCheck(req, res, currentConfig, providerPoolManager, providerType) {
     try {
         if (!providerPoolManager) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Provider pool manager not initialized' } }));
             return true;
         }
@@ -664,7 +664,7 @@ export async function handleHealthCheck(req, res, currentConfig, providerPoolMan
         const providers = providerPoolManager.providerStatus[providerType] || [];
         
         if (providers.length === 0) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'No providers found for this type' } }));
             return true;
         }
@@ -673,7 +673,7 @@ export async function handleHealthCheck(req, res, currentConfig, providerPoolMan
         const unhealthyProviders = providers.filter(ps => !ps.config.isHealthy);
         
         if (unhealthyProviders.length === 0) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: true,
                 message: 'No unhealthy providers to check',
@@ -790,7 +790,7 @@ export async function handleHealthCheck(req, res, currentConfig, providerPoolMan
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: `Health check completed: ${successCount} healthy, ${failCount} unhealthy`,
@@ -802,7 +802,7 @@ export async function handleHealthCheck(req, res, currentConfig, providerPoolMan
         return true;
     } catch (error) {
         logger.error('[UI API] Health check error:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -821,7 +821,7 @@ export async function handleQuickLinkProvider(req, res, currentConfig, providerP
         const pathsToLink = filePaths || (filePath ? [filePath] : []);
 
         if (!pathsToLink || pathsToLink.length === 0) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'filePath or filePaths is required' } }));
             return true;
         }
@@ -942,7 +942,7 @@ export async function handleQuickLinkProvider(req, res, currentConfig, providerP
             ? `Successfully linked ${successCount} config file(s)${failCount > 0 ? `, ${failCount} failed` : ''}`
             : `Failed to link all ${failCount} config file(s)`;
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: successCount > 0,
             message: message,
@@ -953,7 +953,7 @@ export async function handleQuickLinkProvider(req, res, currentConfig, providerP
         return true;
     } catch (error) {
         logger.error('[UI API] Quick link failed:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Link failed: ' + error.message
@@ -977,7 +977,7 @@ export async function handleRefreshProviderUuid(req, res, currentConfig, provide
                 const fileContent = readFileSync(filePath, 'utf-8');
                 providerPools = JSON.parse(fileContent);
             } catch (readError) {
-                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({ error: { message: 'Provider pools file not found' } }));
                 return true;
             }
@@ -988,7 +988,7 @@ export async function handleRefreshProviderUuid(req, res, currentConfig, provide
         const providerIndex = providers.findIndex(p => p.uuid === providerUuid);
         
         if (providerIndex === -1) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Provider not found' } }));
             return true;
         }
@@ -1020,7 +1020,7 @@ export async function handleRefreshProviderUuid(req, res, currentConfig, provide
             timestamp: new Date().toISOString()
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: 'UUID refreshed successfully',
@@ -1030,7 +1030,7 @@ export async function handleRefreshProviderUuid(req, res, currentConfig, provide
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }

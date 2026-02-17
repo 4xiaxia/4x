@@ -34,7 +34,7 @@ export async function handleGetSystem(req, res) {
         cpuUsage = getCpuUsagePercent();
     }
     
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify({
         appVersion: appVersion,
         nodeVersion: process.version,
@@ -52,7 +52,7 @@ export async function handleGetSystem(req, res) {
 export async function handleDownloadTodayLog(req, res) {
     try {
         if (!logger.currentLogFile || !existsSync(logger.currentLogFile)) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Today\'s log file not found' } }));
             return true;
         }
@@ -68,7 +68,7 @@ export async function handleDownloadTodayLog(req, res) {
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to download log:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: 'Failed to download log: ' + error.message } }));
         return true;
     }
@@ -90,13 +90,13 @@ export async function handleClearTodayLog(req, res) {
                 message: 'Today\'s log file has been cleared'
             });
             
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: true,
                 message: '当日日志已清空'
             }));
         } else {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 error: { message: '清空日志失败' }
@@ -105,7 +105,7 @@ export async function handleClearTodayLog(req, res) {
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to clear log:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: false,
             error: { message: 'Failed to clear log: ' + error.message }
@@ -118,7 +118,7 @@ export async function handleClearTodayLog(req, res) {
  * 健康检查接口（用于前端token验证）
  */
 export async function handleHealthCheck(req, res) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify({ status: 'ok', timestamp: Date.now() }));
     return true;
 }
@@ -130,7 +130,7 @@ export async function handleGetServiceMode(req, res) {
     const IS_WORKER_PROCESS = process.env.IS_WORKER_PROCESS === 'true';
     const masterPort = process.env.MASTER_PORT || 3100;
     
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify({
         mode: IS_WORKER_PROCESS ? 'worker' : 'standalone',
         pid: process.pid,
@@ -164,7 +164,7 @@ export async function handleRestartService(req, res) {
                 message: 'Service restart requested, worker will be restarted by master process'
             });
             
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: true,
                 message: 'Restart request sent to master process',
@@ -178,7 +178,7 @@ export async function handleRestartService(req, res) {
             // 独立运行模式，无法自动重启
             logger.info('[UI API] Service is running in standalone mode, cannot auto-restart');
             
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 success: false,
                 message: 'Service is running in standalone mode. Please use master.js to enable auto-restart feature.',
@@ -189,7 +189,7 @@ export async function handleRestartService(req, res) {
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to restart service:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to restart service: ' + error.message

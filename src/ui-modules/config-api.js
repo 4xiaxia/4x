@@ -57,7 +57,7 @@ export async function handleGetConfig(req, res, currentConfig) {
         }
     }
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify({
         ...currentConfig,
         systemPrompt
@@ -180,7 +180,7 @@ export async function handleUpdateConfig(req, res, currentConfig) {
             });
         } catch (error) {
             logger.error('[UI API] Failed to save configuration to file:', error.message);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 error: {
                     message: 'Failed to save configuration to file: ' + error.message,
@@ -193,7 +193,7 @@ export async function handleUpdateConfig(req, res, currentConfig) {
         // Update the global CONFIG object to reflect changes immediately
         Object.assign(CONFIG, currentConfig);
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: 'Configuration updated successfully',
@@ -201,7 +201,7 @@ export async function handleUpdateConfig(req, res, currentConfig) {
         }));
         return true;
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({ error: { message: error.message } }));
         return true;
     }
@@ -223,7 +223,7 @@ export async function handleReloadConfig(req, res, providerPoolManager) {
             timestamp: new Date().toISOString()
         });
         
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: 'Configuration files reloaded successfully',
@@ -236,7 +236,7 @@ export async function handleReloadConfig(req, res, providerPoolManager) {
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to reload config files:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to reload configuration files: ' + error.message
@@ -255,7 +255,7 @@ export async function handleUpdateAdminPassword(req, res) {
         const { password } = body;
 
         if (!password || password.trim() === '') {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 error: {
                     message: 'Password cannot be empty'
@@ -270,7 +270,7 @@ export async function handleUpdateAdminPassword(req, res) {
         
         logger.info('[UI API] Admin password updated successfully');
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             success: true,
             message: 'Admin password updated successfully'
@@ -278,7 +278,7 @@ export async function handleUpdateAdminPassword(req, res) {
         return true;
     } catch (error) {
         logger.error('[UI API] Failed to update admin password:', error);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
             error: {
                 message: 'Failed to update password: ' + error.message

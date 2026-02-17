@@ -77,7 +77,7 @@ export function createRequestHandler(config, providerPoolManager) {
         // 检查是否是插件静态文件
         const pluginManager = getPluginManager();
         const isPluginStatic = pluginManager.isPluginStaticPath(path);
-        if (path.startsWith('/static/') || path === '/' || path === '/favicon.ico' || path === '/index.html' || path.startsWith('/app/') || path.startsWith('/components/') || path === '/login.html' || isPluginStatic) {
+        if (path.startsWith('/static/') || path === '/' || path === '/favicon.ico' || path === '/index.html' || path.startsWith('/app/') || path.startsWith('/components/') || path === '/login.html' || path === '/simple.html' || path === '/simple-enhanced.html' || isPluginStatic) {
             const served = await serveStaticFiles(path, res);
             if (served) return;
         }
@@ -100,7 +100,7 @@ export function createRequestHandler(config, providerPoolManager) {
 
         // Health check endpoint
         if (method === 'GET' && path === '/health') {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({
                 status: 'healthy',
                 timestamp: new Date().toISOString(),
@@ -124,7 +124,7 @@ export function createRequestHandler(config, providerPoolManager) {
                 if (!isNaN(unhealthRatioThreshold)) {
                     summaryHealth = provideStatus.unhealthyRatio <= unhealthRatioThreshold;
                 }
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                 res.end(JSON.stringify({
                     timestamp: new Date().toISOString(),
                     items: provideStatus.providerPoolsSlim,
@@ -178,7 +178,7 @@ export function createRequestHandler(config, providerPoolManager) {
         }
         if (!authResult.authorized) {
             // 没有认证插件授权，返回 401
-            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.writeHead(401, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Unauthorized: API key is invalid or missing.' } }));
             return;
         }
@@ -223,17 +223,17 @@ export function createRequestHandler(config, providerPoolManager) {
                 // Check if apiService has countTokens method
                 if (apiService && typeof apiService.countTokens === 'function') {
                     const result = apiService.countTokens(body);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                     res.end(JSON.stringify(result));
                 } else {
                     // Fallback: use estimateInputTokens if available
                     if (apiService && typeof apiService.estimateInputTokens === 'function') {
                         const inputTokens = apiService.estimateInputTokens(body);
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                         res.end(JSON.stringify({ input_tokens: inputTokens }));
                     } else {
                         // Last resort: return 0 with a message
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
                         res.end(JSON.stringify({ input_tokens: 0 }));
                     }
                 }
@@ -251,7 +251,7 @@ export function createRequestHandler(config, providerPoolManager) {
             if (apiHandled) return;
 
             // Fallback for unmatched routes
-            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: { message: 'Not Found' } }));
         } catch (error) {
             handleError(res, error, currentConfig.MODEL_PROVIDER);
