@@ -1,64 +1,68 @@
-
-import RateLimiter from '../src/utils/rate-limiter.js';
+import { RateLimiter } from '../src/utils/rate-limiter.js';
 
 describe('RateLimiter', () => {
     let rateLimiter;
 
     beforeEach(() => {
-        // Mock Date.now
-        jest.useFakeTimers();
         rateLimiter = new RateLimiter({
             enabled: true,
-            globalLimit: 5, // 5 requests per second
-            ipLimit: 2      // 2 requests per second per IP
+            globalLimit: 10,
+            ipLimit: 5
         });
     });
 
-    afterEach(() => {
-        rateLimiter.destroy();
-        jest.useRealTimers();
-    });
-
     test('should allow requests within global limit', () => {
+        // Use different IPs to avoid hitting IP limit (5) while testing global limit (10)
         for (let i = 0; i < 5; i++) {
-            expect(rateLimiter.check()).toBe(true);
+            expect(rateLimiter.check('1.2.3.4')).toBe(true);
+        }
+        for (let i = 0; i < 5; i++) {
+            expect(rateLimiter.check('5.6.7.8')).toBe(true);
         }
     });
 
     test('should block requests exceeding global limit', () => {
-        for (let i = 0; i < 5; i++) {
-            rateLimiter.check();
-        }
-        expect(rateLimiter.check()).toBe(false);
+        rateLimiter.globalLimit = 2;
+        rateLimiter.tokens = 2;
+        expect(rateLimiter.check('1.2.3.4')).toBe(true);
+        expect(rateLimiter.check('1.2.3.4')).toBe(true);
+        expect(rateLimiter.check('1.2.3.4')).toBe(false);
     });
 
     test('should allow requests within IP limit', () => {
-        expect(rateLimiter.check('1.2.3.4')).toBe(true);
-        expect(rateLimiter.check('1.2.3.4')).toBe(true);
+        for (let i = 0; i < 5; i++) {
+            expect(rateLimiter.check('1.2.3.4')).toBe(true);
+        }
     });
 
     test('should block requests exceeding IP limit', () => {
-        rateLimiter.check('1.2.3.4');
-        rateLimiter.check('1.2.3.4');
+        for (let i = 0; i < 5; i++) {
+            rateLimiter.check('1.2.3.4');
+        }
         expect(rateLimiter.check('1.2.3.4')).toBe(false);
     });
 
     test('should distinguish between different IPs', () => {
-        rateLimiter.check('1.2.3.4');
-        rateLimiter.check('1.2.3.4');
+        for (let i = 0; i < 5; i++) {
+            rateLimiter.check('1.2.3.4');
+        }
         expect(rateLimiter.check('1.2.3.4')).toBe(false);
-
         expect(rateLimiter.check('5.6.7.8')).toBe(true);
     });
 
-    test('should refill tokens over time', () => {
-        rateLimiter.check('1.2.3.4');
-        rateLimiter.check('1.2.3.4');
-        expect(rateLimiter.check('1.2.3.4')).toBe(false);
-
-        // Advance time by 1 second
-        jest.advanceTimersByTime(1000);
+    test('should refill tokens over time', async () => {
+        rateLimiter.globalLimit = 1;
+        rateLimiter.tokens = 1;
 
         expect(rateLimiter.check('1.2.3.4')).toBe(true);
+        expect(rateLimiter.check('1.2.3.4')).toBe(false);
+
+        // Mock time passing
+        const now = Date.now();
+        jest.spyOn(Date, 'now').mockReturnValue(now + 1500);
+
+        expect(rateLimiter.check('1.2.3.4')).toBe(true);
+
+        jest.restoreAllMocks();
     });
 });

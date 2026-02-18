@@ -35,13 +35,6 @@ export class ProviderPoolManager {
         this.maxErrorCount = options.maxErrorCount ?? 10; // Default to 10 errors before marking unhealthy
         this.healthCheckInterval = options.healthCheckInterval ?? 10 * 60 * 1000; // Default to 10 minutes
 
-        // 冷却配置 (Anti-Risk)
-        this.coolDownConfig = {
-            enabled: true,
-            duration: 5 * 60 * 1000, // 5 分钟冷却
-            triggerCodes: [429, 403] // 触发冷却的状态码
-        };
-
             // 日志级别控制
         this.logLevel = options.logLevel || 'info'; // 'debug', 'info', 'warn', 'error'
         
@@ -648,23 +641,15 @@ export class ProviderPoolManager {
     _doSelectProvider(providerType, requestedModel, options) {
         const availableProviders = this.providerStatus[providerType] || [];
         
-        // 检查并恢复已到恢复时间的提供商 (包括冷却中的)
+        // 检查并恢复已到恢复时间的提供商
         this._checkAndRecoverScheduledProviders(providerType);
         
         // 获取固定时间戳，确保排序过程中一致
         const now = Date.now();
         
-        let availableAndHealthyProviders = availableProviders.filter(p => {
-            // 排除不健康、禁用、需要刷新、或者处于冷却状态的节点
-            if (!p.config.isHealthy || p.config.isDisabled || p.config.needsRefresh) return false;
-
-            // 检查冷却状态
-            if (p.config.coolDownUntil && new Date(p.config.coolDownUntil).getTime() > now) {
-                return false;
-            }
-
-            return true;
-        });
+        let availableAndHealthyProviders = availableProviders.filter(p =>
+            p.config.isHealthy && !p.config.isDisabled && !p.config.needsRefresh
+        );
 
         // 如果指定了模型，则排除不支持该模型的提供商
         if (requestedModel) {
@@ -985,21 +970,6 @@ export class ProviderPoolManager {
             const lastErrorTime = provider.config.lastErrorTime ? new Date(provider.config.lastErrorTime).getTime() : 0;
             const errorWindowMs = 10000; // 10 秒窗口期
 
-            // 检测是否需要触发冷却 (Anti-Risk)
-            let isCoolingDown = false;
-            if (errorMessage) {
-                // 检查错误信息中是否包含 429 或 403
-                const isRateLimit = errorMessage.includes('429') || errorMessage.toLowerCase().includes('too many requests');
-                const isForbidden = errorMessage.includes('403') || errorMessage.toLowerCase().includes('forbidden');
-
-                if ((isRateLimit || isForbidden) && this.coolDownConfig.enabled) {
-                    const coolDownUntil = new Date(now + this.coolDownConfig.duration);
-                    provider.config.coolDownUntil = coolDownUntil.toISOString();
-                    isCoolingDown = true;
-                    this._log('warn', `Provider ${providerConfig.uuid} triggered Cool Down (Anti-Risk). Paused until ${coolDownUntil.toISOString()}`);
-                }
-            }
-
             // 如果距离上次错误超过窗口期，重置错误计数
             if (now - lastErrorTime > errorWindowMs) {
                 provider.config.errorCount = 1;
@@ -1025,9 +995,6 @@ export class ProviderPoolManager {
                 }
                 
                 this._log('warn', `Marked provider as unhealthy: ${providerConfig.uuid} for type ${providerType}. Total errors: ${provider.config.errorCount}`);
-            } else if (isCoolingDown) {
-                // 即使没有标记为 unhealthy，如果触发了冷却，也要保存状态
-                this._log('info', `Provider ${providerConfig.uuid} is cooling down but remains healthy status.`);
             }
 
             this._debouncedSave(providerType);

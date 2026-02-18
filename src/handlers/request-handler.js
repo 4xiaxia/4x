@@ -8,7 +8,6 @@ import { getProviderPoolManager } from '../services/service-manager.js';
 import { MODEL_PROVIDER } from '../utils/common.js';
 import { PROMPT_LOG_FILENAME } from '../core/config-manager.js';
 import { handleOllamaRequest, handleOllamaShow } from './ollama-handler.js';
-import { handleRiskStatsRequest } from './risk-handler.js';
 import { getPluginManager } from '../core/plugin-manager.js';
 import { getRateLimiter } from '../utils/rate-limiter.js';
 import { randomUUID } from 'crypto';
@@ -134,12 +133,6 @@ export function createRequestHandler(config, providerPoolManager) {
                 timestamp: new Date().toISOString(),
                 provider: currentConfig.MODEL_PROVIDER
             }));
-            return true;
-        }
-
-        // Risk Stats Endpoint (Anti-Risk Monitoring)
-        if (method === 'GET' && path === '/api/risk-stats') {
-            await handleRiskStatsRequest(req, res);
             return true;
         }
 
